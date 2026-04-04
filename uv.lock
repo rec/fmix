@@ -81,6 +81,18 @@ wheels = [
 ]
 
 [[package]]
+name = "dek"
+version = "1.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "xmod" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8b/07/fc3f63620cc90a994d8e58bd12db984d8382ada6e95b2130f6fac35ebc66/dek-1.5.0.tar.gz", hash = "sha256:e6bb54a9cd57f5d6676aa41e6e23a3877f95ccda91b21ad6d498dad2a508905d", size = 3914, upload-time = "2026-02-03T14:36:01.381Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bb/eb/10c83662ee3a2af4c5423adc86663e428283c2c3c996cd249296a43dcb87/dek-1.5.0-py3-none-any.whl", hash = "sha256:c6303fdd730fcc98f67430672a30b6d80ca27de2bf36f62df0608bcbafc72363", size = 5739, upload-time = "2026-02-03T14:36:00.025Z" },
+]
+
+[[package]]
 name = "docstring-parser"
 version = "0.17.0"
 source = { registry = "https://pypi.org/simple" }
@@ -106,33 +118,35 @@ name = "fmix"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "coverage" },
     { name = "ffmpeg-python" },
-    { name = "pyupgrade" },
-    { name = "tomlkit" },
     { name = "tyro" },
 ]
 
 [package.dev-dependencies]
 dev = [
+    { name = "coverage" },
     { name = "pytest" },
+    { name = "pyupgrade" },
     { name = "ruff" },
+    { name = "tdir" },
+    { name = "tomlkit" },
     { name = "ty" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "coverage", specifier = ">=7.13.5" },
     { name = "ffmpeg-python", specifier = ">=0.2.0" },
-    { name = "pyupgrade", specifier = ">=3.21.2" },
-    { name = "tomlkit", specifier = ">=0.14.0" },
     { name = "tyro", specifier = ">=1.0.12" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "coverage", specifier = ">=7.13.5" },
     { name = "pytest", specifier = ">=9.0.2" },
+    { name = "pyupgrade", specifier = ">=3.21.2" },
     { name = "ruff", specifier = ">=0.15.9" },
+    { name = "tdir", specifier = ">=1.9.0" },
+    { name = "tomlkit", specifier = ">=0.14.0" },
     { name = "ty", specifier = ">=0.0.28" },
 ]
 
@@ -235,6 +249,19 @@ wheels = [
 ]
 
 [[package]]
+name = "tdir"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "dek" },
+    { name = "xmod" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a6/db/ddacce8a1e807c9abd070e4ce40ce7f7754bec2a3ec50a79c43cd9d560f1/tdir-1.9.0.tar.gz", hash = "sha256:c420f23c4681893015aba4b628949379b1bb7f149f9ad4eab9e8e9cbf6e97d1e", size = 4040, upload-time = "2026-02-03T13:51:09.13Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/03/9c/68d13a89c3d91fc54ad074ec28296eb39c7b1e46b09f7b157f7eb0fd4b88/tdir-1.9.0-py3-none-any.whl", hash = "sha256:0042f68c2d306bba47b32918dbbfd884cbc95e016a70d4e7f06454e7cd8211df", size = 5369, upload-time = "2026-02-03T13:51:13.017Z" },
+]
+
+[[package]]
 name = "tokenize-rt"
 version = "6.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -309,4 +336,13 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/aa/3e/96397637152a9ce368a575e88e1782a9fe4640a3950e26805ec9cca569c1/tyro-1.0.12.tar.gz", hash = "sha256:b49177ab9668e0c9255025d3936b6647cc07537ca04a4ed34362099907508ba2", size = 489159, upload-time = "2026-04-02T09:48:58.294Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8d/8e/fa21200c7fcebdbc5a1f7ebe2d437d69b0723bfaeea843c846b99248b2ba/tyro-1.0.12-py3-none-any.whl", hash = "sha256:d9c7b65e05c1b6760204bcb4d0b1ef76f235b16f1423d056a0d36814c2df902d", size = 185245, upload-time = "2026-04-02T09:48:56.808Z" },
+]
+
+[[package]]
+name = "xmod"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/8b/3f/0bc3b89c1dd4dee1f954db4c857f8fbe9cdfa8b25efe370b6d78399a93ac/xmod-1.9.0.tar.gz", hash = "sha256:98b2e7e8e659c51b635f4e98faf3fa1f3f96dab2805f19ddd6e352bbb4d23991", size = 3501, upload-time = "2026-02-03T14:34:48.881Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5c/a4/74b9510cf2922fb923f6330fd47c049e9e89d984d6dd445c82a85ce7c4e9/xmod-1.9.0-py3-none-any.whl", hash = "sha256:0a549a055e0391a53e356a63552baa7e562560a6e9423c1437cb53b5d4f697a0", size = 4451, upload-time = "2026-02-03T14:34:48.032Z" },
 ]

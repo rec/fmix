@@ -5,10 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "coverage>=7.13.5",
     "ffmpeg-python>=0.2.0",
-    "pyupgrade>=3.21.2",
-    "tomlkit>=0.14.0",
     "tyro>=1.0.12",
 ]
 
@@ -17,7 +14,11 @@ quote-style = "single"
 
 [dependency-groups]
 dev = [
+    "coverage>=7.13.5",
     "pytest>=9.0.2",
+    "pyupgrade>=3.21.2",
     "ruff>=0.15.9",
+    "tdir>=1.9.0",
+    "tomlkit>=0.14.0",
     "ty>=0.0.28",
 ]
