@@ -7,30 +7,31 @@ from enum import StrEnum, auto
 from functools import cached_property
 
 from .curve import Curve
+from .excepter import Excepter
 
 
 @dc.dataclass(frozen=True)
 class Files:
-    input_files: Sequence[str] = ()
+    inputs: Sequence[str] = ()
 
     # The hardcoded name of the file
-    out_file: str = ''
+    output_file: str = ''
 
     # A root that's used with the long common suffix in the inputs
-    out_root: str = ''
-
-    @cached_property
-    def output_file(self) -> str:
-        if bool(self.out_file) == bool(self.out_root):
-            raise ValueError('Exactly one of `out_file` and  `out_root` must be given')
-        return self.out_file or self.out_root + os.path.commonprefix(self.input_files)
+    output_root: str = ''
 
     def check(self) -> None:
-        if no := [i for i in self.input_files if not os.path.exists(i)]:
-            raise FileNotFoundError(*no)
-        if eq := [i for i in self.input_files if os.path.samefile(i, self.output_file)]:
-            raise ValueError(f'{self.output_file=} cannot overwrite {eq}')
-        # TODO: test that the outfile isn't any of the infiles
+        with Excepter('Files') as ex:
+            if bool(self.output_file) == bool(self.output_root):
+                ex('Exactly one of `output_file` and  `output_root` must be given')
+
+            ex(*(FileNotFoundError(i) for i in self.inputs if not os.path.exists(i)))
+            if any(os.path.samefile(i, self.output) for i in self.inputs):
+                ex(f'{self.output=} overwrites an input')
+
+    @cached_property
+    def output(self) -> str:
+        return self.output_file or self.output_root + os.path.commonprefix(self.inputs)
 
 
 class Pin(StrEnum):
@@ -47,11 +48,14 @@ class Fade:
     duration: float = 1.0
     pin: Pin = Pin.middle
 
-    def __post_init__(self) -> None:
-        self.__dict__.update(
-            pin=Pin(self.pin),
-            curve=Curve.tri if self.curve == 'linear' else Curve(self.curve),
-        )
+    def check(self) -> None:
+        with Excepter('Fade') as ex:
+            with ex.catch():
+                pin = Pin(self.pin)
+            with ex.catch():
+                curve = Curve.tri if self.curve == 'linear' else Curve(self.curve)
+
+        self.__dict__.update(curve=curve, pin=pin)
 
 
 @dc.dataclass(frozen=True)
@@ -76,3 +80,10 @@ class FMix:
     fade: Fade = Fade()
     edit_point: Sequence[EditPoint] = ()
     render: Render = Render()
+
+    def check(self) -> None:
+        with Excepter('fmix') as ex:
+            with ex.catch():
+                self.files.check()
+            with ex.catch():
+                self.fade.check()
