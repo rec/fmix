@@ -1,8 +1,8 @@
-[out]
+[files]
+input_files = ['1-2 + 160800.wav', '3-4 + 160800.wav']
 file_root = 'mix'
 # out.file_root is prepended to the longest common suffix in the filenames
-# Example: if the inputs are `1-2 + 160800.wav` and `3-4 + 160800.wav`,
-# and file_root = 'mix' then the output will be `mix + 160800.wav`.
+# In this case, the output file will be `mix + 160800.wav`.
 
 # file_name = 'mix-160800.wav'
 # Or you can explicitly set the file_name.

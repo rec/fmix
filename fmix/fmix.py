@@ -12,16 +12,17 @@ class Files:
     input_files: Sequence[str] = ()
 
     # The hardcoded name of the file
-    file_name: str = ''
+    out_file: str = ''
 
     # A root that's used with the long common suffix in the inputs
-    file_root: str = ''
+    out_root: str = ''
 
     @cached_property
     def output_file(self) -> str:
-        if bool(self.file_name) == bool(self.file_root):
-            raise ValueError('Exactly one of `file_name` and  file_root` must be given')
-        return self.file_name or self.file_root + os.path.commonprefix(self.input_files)
+        if bool(self.out_file) == bool(self.out_root):
+            raise ValueError('Exactly one of `out_file` and  `out_root` must be given')
+        return self.out_file or self.out_root + os.path.commonprefix(self.input_files)
+        # TODO: test that the outfile isn't any of the infiles
 
 
 class Pin(StrEnum):
@@ -51,4 +52,4 @@ class EditPoint:
 class FMix:
     files: Files
     fade: Fade = Fade()
-    edit_points: Sequence[EditPoint] = ()
+    edit_point: Sequence[EditPoint] = ()
