@@ -12,15 +12,15 @@ class Files:
     input_files: Sequence[str] = ()
 
     # The hardcoded name of the file
-    file_name: str = ""
+    file_name: str = ''
 
     # A root that's used with the long common suffix in the inputs
-    file_root: str = ""
+    file_root: str = ''
 
     @cached_property
     def output_file(self) -> str:
         if bool(self.file_name) == bool(self.file_root):
-            raise ValueError("Exactly one of `file_name` and  file_root` must be given")
+            raise ValueError('Exactly one of `file_name` and  file_root` must be given')
         return self.file_name or self.file_root + os.path.commonprefix(self.input_files)
 
 
@@ -34,7 +34,7 @@ class Pin(StrEnum):
 
 @dc.dataclass(frozen=True)
 class Fade:
-    shape: str = "linear"
+    shape: str = 'linear'
     duration: float = 1.0
     pin: Pin = Pin.middle
 

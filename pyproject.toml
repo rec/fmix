@@ -11,6 +11,9 @@ dependencies = [
     "tyro>=1.0.12",
 ]
 
+[tool.ruff.format]
+quote-style = "single"
+
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
