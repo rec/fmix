@@ -83,7 +83,7 @@ class EditPoint:
 
 
 @dc.dataclass(frozen=True)
-class Render:
+class Audio:
     begin: float | None = None
     end: float | None = None
     gain: float = 1.0
@@ -92,33 +92,25 @@ class Render:
 
 @dc.dataclass(frozen=True)
 class FMix:
-    files: Files
-    fade: Fade = Fade()
+    audio: Audio = Audio()
     edit_point: Sequence[EditPoint] = ()
-    render: Render = Render()
+    fade: Fade = Fade()
+    files: Files = Files()
 
     @staticmethod
-    def make(
-        files: dict[str, Any],
-        fade: dict[str, Any],
-        edit_point: list[dict[str, Any]],
-        render: dict[str, Any],
-        **kwargs: Any,
-    ) -> FMix:
+    def make(**kwargs: Any) -> FMix:
         with Excepter('FMix') as ex:
-            ex(*kwargs)
+            missing = [f.name for f in dc.fields(FMix) if f.name not in kwargs]
+            ex(*(f'Missing field {i}' for i in missing))
+            kwargs |= {k: {} for k in missing}
 
-            return FMix(
-                files=ex.make(Files, **files),
-                fade=ex.make(Fade, **fade),
-                edit_point=[ex.make(EditPoint, **e) for e in edit_point],
-                render=ex.make(Render, **render),
-            )
+            audio = ex.make(Audio, **kwargs.pop('audio'))
+            edit_point = [ex.make(EditPoint, **e) for e in kwargs.pop('edit_point')]
+            files = ex.make(Files, **kwargs.pop('files'))
+            fade = ex.make(Fade, **kwargs.pop('fade'))
+            ex(*(f'Unknown field: {k}' for k in kwargs))
 
-
-# TIME_FORMATS = "%H:%M:%S.%f", "%H:%M:%S", "%M:%S.%f", "%M:%S", "%S.%f", "%S"
-# This doesn't work because we want to suppose times with more than 60 seconds
-# or 60 minutes.
+            return FMix(audio=audio, fade=fade, files=files, edit_point=edit_point)
 
 
 def _parse_time(t: str | float | int) -> float | int:

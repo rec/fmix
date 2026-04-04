@@ -1,4 +1,4 @@
-[render]
+[audio]
 # begin = 1.5  # Set these to only render a portion of the result
 # end = 1.5
 gain = 1.0
