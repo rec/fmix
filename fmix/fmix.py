@@ -6,6 +6,8 @@ from collections.abc import Sequence
 from enum import StrEnum, auto
 from functools import cached_property
 
+from .curve import Curve
+
 
 @dc.dataclass(frozen=True)
 class Files:
@@ -35,12 +37,15 @@ class Pin(StrEnum):
 
 @dc.dataclass(frozen=True)
 class Fade:
-    shape: str = 'linear'
+    curve: Curve = Curve.tri
     duration: float = 1.0
     pin: Pin = Pin.middle
 
     def __post_init__(self) -> None:
-        self.__dict__['pin'] = Pin(self.pin)
+        self.__dict__.update(
+            pin=Pin(self.pin),
+            curve=Curve.tri if self.curve == 'linear' else Curve(self.curve),
+        )
 
 
 @dc.dataclass(frozen=True)
