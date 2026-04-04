@@ -9,18 +9,22 @@ file_root = 'mix'
 
 [fade]
 shape = 'linear'   # Choose from linear, log, logistic, sqrt, etc
-duration = 1.0         # In seconds
+duration = 1.0     # In seconds
 pin = 'middle'     # Choose from begin, middle, end
 
 [[edit_point]]
-time = 0
+time = 60
 mix = {9 = 1}     # Any track starting with 9 is at level 1, all else at level 0
 
 [[edit_point]]
-time = "2:03.45"   # Just after two minutes. The number 123.45 also works.
+time = '2:03.45'   # Just after two minutes. The number 123.45 also works.
 mix = {3 = 1, 5 = 1, 7 = 1}
 
 [[edit_point]]
-time = 185.0       # The string "3:05" also works
+time = 185.0       # The string '3:05' also works
 mix = {9 = 1}
-fade = {shape = 'log', duration=5}
+
+[[edit_point]]
+time = '20:57.02'
+cut = true
+fade = {shape='log', duration=5, pin='end'}

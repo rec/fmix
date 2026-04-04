@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import dataclasses as dc
 import os
+from collections.abc import Sequence
 from enum import StrEnum, auto
 from functools import cached_property
-from collections.abc import Sequence
 
 
 @dc.dataclass(frozen=True)
@@ -41,9 +41,10 @@ class Fade:
 
 @dc.dataclass(frozen=True)
 class EditPoint:
-    time: float
+    time: float = 0.0
     mix: dict[str, float] = dc.field(default_factory=dict)
     fade: Fade | None = None
+    cut: bool = False
 
 
 @dc.dataclass(frozen=True)
