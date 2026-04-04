@@ -39,6 +39,9 @@ class Fade:
     duration: float = 1.0
     pin: Pin = Pin.middle
 
+    def __post_init__(self) -> None:
+        self.__dict__['pin'] = Pin(self.pin)
+
 
 @dc.dataclass(frozen=True)
 class EditPoint:
@@ -49,7 +52,16 @@ class EditPoint:
 
 
 @dc.dataclass(frozen=True)
+class Render:
+    begin: float | None = None
+    end: float | None = None
+    gain: float = 1.0
+    normalize: bool = True
+
+
+@dc.dataclass(frozen=True)
 class FMix:
     files: Files
     fade: Fade = Fade()
     edit_point: Sequence[EditPoint] = ()
+    render: Render = Render()

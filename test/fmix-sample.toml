@@ -1,3 +1,9 @@
+[render]
+# begin = 1.5  # Set these to only render a portion of the result
+# end = 1.5
+gain = 1.0
+normalize = true
+
 [files]
 input_files = ['1-2 + 160800.wav', '3-4 + 160800.wav']
 file_root = 'mix'
@@ -18,7 +24,7 @@ mix = {9 = 1}     # Any track starting with 9 is at level 1, all else at level 0
 
 [[edit_point]]
 time = '2:03.45'   # Just after two minutes. The number 123.45 also works.
-mix = {3 = 1, 5 = 1, 7 = 1}
+mix = {3 = 0.7, 5 = 0.8, 7 = 0.7}
 
 [[edit_point]]
 time = 185.0       # The string '3:05' also works
