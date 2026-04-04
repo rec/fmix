@@ -8,6 +8,7 @@ dependencies = [
     "coverage>=7.13.5",
     "ffmpeg-python>=0.2.0",
     "pyupgrade>=3.21.2",
+    "tomlkit>=0.14.0",
     "tyro>=1.0.12",
 ]
 
