@@ -24,6 +24,12 @@ class Files:
         if bool(self.out_file) == bool(self.out_root):
             raise ValueError('Exactly one of `out_file` and  `out_root` must be given')
         return self.out_file or self.out_root + os.path.commonprefix(self.input_files)
+
+    def check(self) -> None:
+        if no := [i for i in self.input_files if not os.path.exists(i)]:
+            raise FileNotFoundError(*no)
+        if eq := [i for i in self.input_files if os.path.samefile(i, self.output_file)]:
+            raise ValueError(f'{self.output_file=} cannot overwrite {eq}')
         # TODO: test that the outfile isn't any of the infiles
 
 
