@@ -5,8 +5,8 @@ gain = 1.0
 normalize = true
 
 [files]
-input_files = ['1-2 + 160800.wav', '3-4 + 160800.wav']
-file_root = 'mix'
+inputs = ['1-2 + 160800.wav', '3-4 + 160800.wav']
+output_root = 'MIX'
 # out.file_root is prepended to the longest common suffix in the filenames
 # In this case, the output file will be `mix + 160800.wav`.
 
@@ -14,7 +14,7 @@ file_root = 'mix'
 # Or you can explicitly set the file_name.
 
 [fade]
-shape = 'linear'   # Choose from linear, log, logistic, sqrt, etc
+curve = 'linear'   # From ffmpeg
 duration = 1.0     # In seconds
 pin = 'middle'     # Choose from begin, middle, end
 
