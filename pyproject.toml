@@ -3,7 +3,7 @@ name = "fmix"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
     "coverage>=7.13.5",
     "ffmpeg-python>=0.2.0",
