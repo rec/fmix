@@ -3,22 +3,25 @@ from __future__ import annotations
 import dataclasses as dc
 import os
 from enum import StrEnum, auto
+from functools import cached_property
+from collections.abc import Sequence
 
 
 @dc.dataclass(frozen=True)
-class Out:
+class Files:
+    input_files: Sequence[str] = ()
+
     # The hardcoded name of the file
     file_name: str = ""
 
     # A root that's used with the long common suffix in the inputs
     file_root: str = ""
 
-    def __post_init__(self) -> None:
+    @cached_property
+    def output_file(self) -> str:
         if bool(self.file_name) == bool(self.file_root):
             raise ValueError("Exactly one of `file_name` and  file_root` must be given")
-
-    def __call__(self, *files: str) -> str:
-        return self.file_name or self.file_root + os.path.commonprefix(files)
+        return self.file_name or self.file_root + os.path.commonprefix(self.input_files)
 
 
 class Pin(StrEnum):
@@ -41,3 +44,10 @@ class EditPoint:
     time: float
     mix: dict[str, float] = dc.field(default_factory=dict)
     fade: Fade | None = None
+
+
+@dc.dataclass(frozen=True)
+class FMix:
+    files: Files
+    fade: Fade = Fade()
+    edit_points: Sequence[EditPoint] = ()
