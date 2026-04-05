@@ -16,11 +16,10 @@ output_root = 'MIX'
 [fade]
 curve = 'linear'   # From ffmpeg
 duration = 1.0     # In seconds
-pin = 'middle'     # Choose from begin, middle, end
 
 [[edit_point]]
 time = 60
-mix = {9 = 1}     # Any track starting with 9 is at level 1, all else at level 0
+mix = {9 = 1}      # Any track starting with 9 is at level 1, all else at level 0
 
 [[edit_point]]
 time = '2:03.45'   # Just after two minutes. The number 123.45 also works.
@@ -32,5 +31,4 @@ mix = {9 = 1}
 
 [[edit_point]]
 time = '20:57.02'
-cut = true
-fade = {shape='log', duration=5, pin='end'}
+mix = {}
