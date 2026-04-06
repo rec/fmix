@@ -9,7 +9,7 @@ from ffmpeg.nodes import InputNode
 from .edit_point import INF, EditPoint, Fade, trim
 
 
-def make_cut_points(
+def render(
     edit_points: Sequence[EditPoint],
     fade: Fade,
     inputs: Sequence[InputNode],
