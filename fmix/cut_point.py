@@ -6,9 +6,7 @@ from itertools import pairwise
 import ffmpeg as ff
 from ffmpeg.nodes import InputNode
 
-from .edit_point import EditPoint, Fade
-
-INF = float('inf')
+from .edit_point import INF, EditPoint, Fade, trim
 
 
 def make_cut_points(
@@ -26,10 +24,8 @@ def make_cut_points(
     def segment(a: EditPoint, b: EditPoint) -> InputNode:
         ins, levels = zip((inputs[int(k)], v) for k, v in a.mix.items())
 
-        kwargs = {'start': a.time_}
-        if b.time_ != INF:
-            kwargs['end'] = b.time_ + fade.duration
-        trimmed = [ff.filter(i, 'atrim', **kwargs) for i in ins]
+        kwargs = {'start': a.time_, 'end': b.time_ + fade.duration}
+        trimmed = [trim(i, **kwargs) for i in ins]
         formatted = [ff.filter(i, 'aformat', sample_fmts='fltp') for i in trimmed]
         weights = ' '.join(str(i) for i in levels)
         return ff.filter(formatted, 'amix', weights=weights, normalize=False)
