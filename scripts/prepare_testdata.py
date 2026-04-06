@@ -4,9 +4,8 @@ import sys
 
 def loop(s):
     (
-        ffmpeg
-        .input(s)
-        .filter('aloop', loop=3, size=10*48000)
+        ffmpeg.input(s)
+        .filter('aloop', loop=3, size=10 * 48000)
         .output(s.replace('m4a', 'wav'))
         .run(cmd=['ffmpeg', '-hide_banner', '-y'])
     )
@@ -14,8 +13,7 @@ def loop(s):
 
 def run(s):
     (
-        ffmpeg
-        .input(s)
+        ffmpeg.input(s)
         .filter('atrim', end=6.3)
         .output(s.replace('wav', 'm4a'))
         .run(cmd=['ffmpeg', '-hide_banner', '-y'])

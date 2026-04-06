@@ -40,12 +40,12 @@ class FMix:
         return ff.output(stream, self.files.output)
 
     @cached_property
-    def _inputs(self) -> Sequence[InputNode]:
-        return [ff.input(f'"{i}"') for i in self.files.inputs]
+    def _inputs(self) -> dict[str, InputNode]:
+        return {k: ff.input(f'"{v}"') for k, v in self.files.inputs.items()}
 
     def _stream(self, a: EditPoint, b: EditPoint) -> InputNode:
         ins, levels = zip(
-            *((self._inputs[int(k)], v) for k, v in a.mix.items()), strict=True
+            *((self._inputs[k], v) for k, v in a.mix.items()), strict=True
         )
 
         kwargs = {'begin': a.time_, 'end': b.time_ + self.fade.duration}
