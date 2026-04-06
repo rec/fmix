@@ -3,12 +3,13 @@ from __future__ import annotations
 import dataclasses as dc
 from collections.abc import Sequence
 from functools import cached_property
+from itertools import pairwise
 from typing import Any
 
 import ffmpeg as ff
 from ffmpeg.nodes import InputNode
 
-from .audio import Audio
+from .audio import INF, Audio, trim
 from .edit_point import EditPoint, Fade
 from .excepter import Excepter
 from .files import Files
@@ -21,9 +22,35 @@ class FMix:
     fade: Fade = Fade()
     files: Files = Files()
 
+    def render(self) -> InputNode:
+        edit_points = sorted(self.edit_point)
+        if edit_points and edit_points[-1].mix:
+            edit_points.append(EditPoint(INF, {}))
+        assert len(edit_points) > 1
+
+        begin, *streams, end = (self._stream(a, b) for a, b in pairwise(edit_points))
+        if self.audio.fade_in:
+            begin = self.fade.fade(begin, 'in')
+        if self.audio.fade_out:
+            end = self.fade.fade(end, 'out')
+
+        stream = begin
+        for s in (*streams, end):
+            stream = self.fade.crossfade(stream, s)
+        return stream
+
     @cached_property
-    def inputs(self) -> Sequence[InputNode]:
+    def _inputs(self) -> Sequence[InputNode]:
         return [ff.input(i) for i in self.files.inputs]
+
+    def _stream(self, a: EditPoint, b: EditPoint) -> InputNode:
+        ins, levels = zip((self._inputs[int(k)], v) for k, v in a.mix.items())
+
+        kwargs = {'start': a.time_, 'end': b.time_ + self.fade.duration}
+        trimmed = [trim(i, **kwargs) for i in ins]
+        formatted = [ff.filter(i, 'aformat', sample_fmts='fltp') for i in trimmed]
+        weights = ' '.join(str(i) for i in levels)
+        return ff.filter(formatted, 'amix', weights=weights, normalize=False)
 
 
 def make_fmix(**kwargs: Any) -> FMix:
