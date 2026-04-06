@@ -37,16 +37,18 @@ class FMix:
         stream = begin
         for s in (*streams, end):
             stream = self.fade.crossfade(stream, s)
-        return stream
+        return ff.output(stream, self.files.output)
 
     @cached_property
     def _inputs(self) -> Sequence[InputNode]:
-        return [ff.input(i) for i in self.files.inputs]
+        return [ff.input(f'"{i}"') for i in self.files.inputs]
 
     def _stream(self, a: EditPoint, b: EditPoint) -> InputNode:
-        ins, levels = zip((self._inputs[int(k)], v) for k, v in a.mix.items())
+        ins, levels = zip(
+            *((self._inputs[int(k)], v) for k, v in a.mix.items()), strict=True
+        )
 
-        kwargs = {'start': a.time_, 'end': b.time_ + self.fade.duration}
+        kwargs = {'begin': a.time_, 'end': b.time_ + self.fade.duration}
         trimmed = [trim(i, **kwargs) for i in ins]
         formatted = [ff.filter(i, 'aformat', sample_fmts='fltp') for i in trimmed]
         weights = ' '.join(str(i) for i in levels)

@@ -5,12 +5,12 @@ gain = 1.0
 normalize = true
 
 [files]
-inputs = ['1-2 + 160800.wav', '3-4 + 160800.wav']
+inputs = ['3-4 + 160.wav', '5-6 + 160.wav', '7-8 + 160.wav', '9-10 + 160.wav']
 output_root = 'MIX'
 # out.file_root is prepended to the longest common suffix in the filenames
-# In this case, the output file will be `mix + 160800.wav`.
+# In this case, the output file will be `mix + 160.wav`.
 
-# file_name = 'mix-160800.wav'
+# file_name = 'mix-160.wav'
 # Or you can explicitly set the file_name.
 
 [fade]
@@ -19,15 +19,15 @@ duration = 1.0     # In seconds
 
 [[edit_point]]
 time = 60
-mix = {9 = 1}      # Any track starting with 9 is at level 1, all else at level 0
+mix = {3 = 1}      # Any track starting with 9 is at level 1, all else at level 0
 
 [[edit_point]]
 time = '2:03.45'   # Just after two minutes. The number 123.45 also works.
-mix = {3 = 0.7, 5 = 0.8, 7 = 0.7}
+mix = {0 = 0.7, 1 = 0.8, 2 = 0.7}
 
 [[edit_point]]
 time = 185.0       # The string '3:05' also works
-mix = {9 = 1}
+mix = {3 = 1}
 
 [[edit_point]]
 time = '20:57.02'

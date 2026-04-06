@@ -20,6 +20,10 @@ class Files:
 
     overwrite: bool = False
 
+    @cached_property
+    def output(self) -> str:
+        return self.output_file or self.output_root + os.path.commonprefix(self.inputs)
+
     def check(self) -> None:
         with Excepter('Files') as ex:
             if bool(self.output_file) == bool(self.output_root):
@@ -31,7 +35,3 @@ class Files:
                     ex(FileExistsError(f'{self.output=} overwrites an existing file'))
                 elif any(os.path.samefile(i, self.output) for i in self.inputs):
                     ex(FileExistsError(f'{self.output=} overwrites an input'))
-
-    @cached_property
-    def output(self) -> str:
-        return self.output_file or self.output_root + os.path.commonprefix(self.inputs)
