@@ -9,20 +9,6 @@ from ffmpeg.nodes import InputNode
 from fmix.curve import Curve
 from fmix.excepter import Excepter
 
-INF = float('inf')
-
-
-def trim(
-    a: InputNode, begin: float | None = None, end: float | None = None
-) -> InputNode:
-    kwargs = {}
-    if begin is not None and begin > 0:
-        kwargs['begin'] = begin
-    if end is not None and end != INF:
-        kwargs['end'] = end
-
-    return ff.filter(a, 'atrim', **kwargs) if kwargs else a
-
 
 @dc.dataclass(frozen=True)
 class Fade:

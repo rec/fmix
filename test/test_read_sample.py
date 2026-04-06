@@ -12,4 +12,4 @@ from fmix import fmix
 def test_read_sample():
     with open('test/fmix-sample.toml', 'br') as fp:
         data = tomllib.load(fp)
-    fmix.FMix.make(**data)
+    fmix.make_fmix(**data)
