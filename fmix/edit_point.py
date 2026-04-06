@@ -20,7 +20,7 @@ class Fade:
         return ff.filter((a, b), 'acrossfade', curve1=c, curve2=c, duration=d)
 
     def fade(self, a: InputNode, type_: str) -> InputNode:
-        return ff.filter(a, 'afade', type=type_, duration=self.duration)
+        return ff.filter(a, 'afade', type=type_, duration=self.duration, normalize=0)
 
     def check(self) -> None:
         with Excepter('Fade') as ex:
