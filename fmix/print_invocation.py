@@ -1,5 +1,4 @@
-import sys
-from typing import Iterator, Sequence
+from collections.abc import Iterator, Sequence
 
 
 def print_invocation(args: Sequence[str]) -> str:
@@ -20,6 +19,5 @@ def print_invocation(args: Sequence[str]) -> str:
                 yield ' '
                 yield v
         yield '\n'
-
 
     return ''.join(it())

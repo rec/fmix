@@ -1,21 +1,21 @@
 from __future__ import annotations
 
-import ffmpeg as ff
 import tempfile
-import tomllib
 from pathlib import Path
 
 from fmix import fmix
 
+from .invocation import run_invocation
 from .test_read_sample import REWRITE_TEST_DATA
 
 ROOT = Path('test/audio')
 MIX = ROOT / 'mix.m4a'
+INVOCATION_FILE = Path('test/mix.txt')
 
 
 def test_mix():
-    with open('test/fmix-short.toml') as fp:
-        data = tomllib.loads(fp.read())
+    data, actual, expected = run_invocation('short')
+    assert actual == expected
 
     with tempfile.NamedTemporaryFile(suffix='.m4a') as tfile:
         if (tf := Path(tfile.name)).exists():

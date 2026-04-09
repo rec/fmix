@@ -24,6 +24,7 @@ class Files:
                 else:
                     try:
                         if any(os.path.samefile(i, self.output) for i in self.inputs):
-                            ex(FileExistsError(f'{self.output=} overwrites an input'), str(self))
+                            msg = f'{self.output=} overwrites an input'
+                            ex(FileExistsError(msg), str(self))
                     except FileNotFoundError:
                         pass
