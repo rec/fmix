@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ffmpeg as ff
 import tempfile
 import tomllib
 from pathlib import Path
@@ -23,7 +24,8 @@ def test_mix():
         if test_mix := MIX.exists() and not REWRITE_TEST_DATA:
             data['files']['output'] = tfile.name
 
-        fmix.make_fmix(**data).run()
+        s = fmix.make_fmix(**data)
+        s.run()
 
         if test_mix:
             actual = tf.read_bytes()
