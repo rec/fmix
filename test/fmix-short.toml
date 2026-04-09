@@ -1,0 +1,23 @@
+[audio]
+gain = 1.0
+normalize = true
+
+[files]
+inputs = {one = 'test/audio/one.m4a', two = 'test/audio/two.m4a', three = 'test/audio/three.m4a'}
+output_root = 'mix'
+
+[fade]
+curve = 'linear'   # From ffmpeg
+duration = 1.0     # In seconds
+
+[[edit_point]]
+time = 1
+mix = {one = 1}
+
+[[edit_point]]
+time = 3
+mix = {two = 1, three = 1}
+
+[[edit_point]]
+time = 4
+mix = {}
