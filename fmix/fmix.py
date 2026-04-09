@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses as dc
+import sys
 from collections.abc import Sequence
 from functools import cached_property
 from itertools import pairwise
@@ -28,27 +29,37 @@ class FMix:
             edit_points.append(EditPoint(INF, {}))
         assert len(edit_points) > 1
 
-        begin, *streams, end = (self._stream(a, b) for a, b in pairwise(edit_points))
+        start, *streams, end = (self._stream(a, b) for a, b in pairwise(edit_points))
         if self.audio.fade_in:
-            begin = self.fade.fade(begin, 'in')
+            start = self.fade.fade(start, 'in')
         if self.audio.fade_out:
             end = self.fade.fade(end, 'out')
 
-        stream = begin
+        stream = start
         for s in (*streams, end):
             stream = self.fade.crossfade(stream, s)
         return ff.output(stream, self.files.output)
 
+    def run(self) -> None:
+        r = self.render()
+        print('ffmeg', *ff.get_args(r), file=sys.stdout)
+        try:
+            r.run()  # ty: ignore[unresolved-attribute]
+        except ff.Error as e:
+            print('ERROR from ffmpeg', e.stderr, e.stdout, sep='n')
+            raise ValueError('ffmpeg error') from None
+        print(self.files.output, 'written', file=sys.stdout)
+
     @cached_property
     def _inputs(self) -> dict[str, InputNode]:
-        return {k: ff.input(f'"{v}"') for k, v in self.files.inputs.items()}
+        return {k: ff.input(v) for k, v in self.files.inputs.items()}
 
     def _stream(self, a: EditPoint, b: EditPoint) -> InputNode:
         ins, levels = zip(
             *((self._inputs[k], v) for k, v in a.mix.items()), strict=True
         )
 
-        kwargs = {'begin': a.time_, 'end': b.time_ + self.fade.duration}
+        kwargs = {'start': a.time_, 'end': b.time_ + self.fade.duration}
         trimmed = [trim(i, **kwargs) for i in ins]
         formatted = [ff.filter(i, 'aformat', sample_fmts='fltp') for i in trimmed]
         weights = ' '.join(str(i) for i in levels)

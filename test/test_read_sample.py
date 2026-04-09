@@ -12,8 +12,8 @@ from fmix import fmix
 REWRITE_TEST_DATA = os.environ.get('REWRITE_TEST_DATA')
 FILTERS_FILE = Path('test/filters.txt')
 ARG = (
-    '-i "9-10 + 160.wav" -i "3-4 + 160.wav" -i "5-6 + 160.wav" -i "7-8 + 160.wav" '
-    '-filter_complex (filter) -map [s16] MIX'
+    '-i 9-10 + 160.wav -i 3-4 + 160.wav -i 5-6 + 160.wav -i 7-8 + 160.wav '
+    '-filter_complex (filter) -map [s16] MIX + 150.wav'
 )
 
 

@@ -4,7 +4,7 @@ normalize = true
 
 [files]
 inputs = {one = 'test/audio/one.m4a', two = 'test/audio/two.m4a', three = 'test/audio/three.m4a'}
-output_root = 'mix'
+output = 'test/audio/mix.m4a'
 
 [fade]
 curve = 'linear'   # From ffmpeg

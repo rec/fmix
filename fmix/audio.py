@@ -8,7 +8,7 @@ from ffmpeg.nodes import InputNode
 
 @dc.dataclass(frozen=True)
 class Audio:
-    begin: float | None = None
+    start: float | None = None
     end: float | None = None
     gain: float = 1.0
     normalize: bool = True
@@ -20,11 +20,11 @@ INF = float('inf')
 
 
 def trim(
-    a: InputNode, begin: float | None = None, end: float | None = None
+    a: InputNode, start: float | None = None, end: float | None = None
 ) -> InputNode:
     kwargs = {}
-    if begin is not None and begin > 0:
-        kwargs['begin'] = begin
+    if start is not None and start > 0:
+        kwargs['start'] = start
     if end is not None and end != INF:
         kwargs['end'] = end
 

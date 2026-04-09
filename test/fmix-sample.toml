@@ -1,17 +1,12 @@
 [audio]
-# begin = 1.5  # Set these to only render a portion of the result
+# start = 1.5  # Set these to only render a portion of the result
 # end = 1.5
 gain = 1.0
 normalize = true
 
 [files]
 inputs = {ben = '3-4 + 160.wav', wx = '5-6 + 160.wav', dl = '7-8 + 160.wav', mix = '9-10 + 160.wav'}
-output_root = 'MIX'
-# out.file_root is prepended to the longest common suffix in the filenames
-# In this case, the output file will be `mix + 160.wav`.
-
-# file_name = 'mix-160.wav'
-# Or you can explicitly set the file_name.
+output = 'MIX + 150.wav'
 
 [fade]
 curve = 'linear'   # From ffmpeg
