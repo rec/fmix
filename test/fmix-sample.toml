@@ -1,34 +1,23 @@
 [audio]
-# begin = 1.5  # Set these to only render a portion of the result
-# end = 1.5
 gain = 1.0
 normalize = true
 
 [files]
-inputs = {ben = '3-4 + 160.wav', wx = '5-6 + 160.wav', dl = '7-8 + 160.wav', mix = '9-10 + 160.wav'}
-output_root = 'MIX'
-# out.file_root is prepended to the longest common suffix in the filenames
-# In this case, the output file will be `mix + 160.wav`.
-
-# file_name = 'mix-160.wav'
-# Or you can explicitly set the file_name.
+inputs = {one = 'test/audio/one.m4a', two = 'test/audio/two.m4a', three = 'test/audio/three.m4a'}
+output_root = 'mix'
 
 [fade]
 curve = 'linear'   # From ffmpeg
 duration = 1.0     # In seconds
 
 [[edit_point]]
-time = 60
-mix = {mix = 1}      # Any track starting with 9 is at level 1, all else at level 0
+time = 1
+mix = {one = 1}
 
 [[edit_point]]
-time = '2:03.45'   # Just after two minutes. The number 123.45 also works.
-mix = {ben = 0.7, wx = 0.8, dl = 0.7}
+time = 3
+mix = {two = 1, three = 1}
 
 [[edit_point]]
-time = 185.0       # The string '3:05' also works
-mix = {ben = 1}
-
-[[edit_point]]
-time = '20:57.02'
+time = 4
 mix = {}
