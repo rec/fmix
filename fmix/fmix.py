@@ -14,6 +14,7 @@ from .audio import INF, Audio, trim
 from .edit_point import EditPoint, Fade
 from .excepter import Excepter
 from .files import Files
+from .print_invocation import print_invocation
 
 
 @dc.dataclass(frozen=True)
@@ -42,7 +43,7 @@ class FMix:
 
     def run(self) -> None:
         r = self.render()
-        print('ffmeg', *ff.get_args(r), file=sys.stdout)
+        print(print_invocation(ff.get_args(r)), file=sys.stderr)
         try:
             r.run()  # ty: ignore[unresolved-attribute]
         except ff.Error as e:
