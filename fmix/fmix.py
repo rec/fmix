@@ -13,8 +13,9 @@ from ffmpeg.nodes import InputNode
 
 from . import audio_file
 from .audio import INF, Audio, trim
-from .edit_point import EditPoint, Fade
+from .edit_point import EditPoint
 from .excepter import Excepter
+from .fade import Fade
 from .files import Files
 from .print_invocation import print_invocation
 
@@ -69,6 +70,10 @@ class FMix:
 
     @cached_property
     def rate(self) -> int:
+        return max(s for _, s in self.samples_and_rates.values())
+
+    @cached_property
+    def sample_length(self) -> int:
         return max(s for _, s in self.samples_and_rates.values())
 
     @cached_property
