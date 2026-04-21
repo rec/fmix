@@ -9,10 +9,11 @@ import tdir
 
 TEMP_FILE = 'tmp.flac'
 ERRORS = 'Format not recognised', 'unable to get format from file extension'
+ALWAYS_2D = False
 
 
 def read(path: str) -> tuple[np.ndarray, int]:
-    return _read_write(path, soundfile.read, always_2d=True)
+    return _read_write(path, soundfile.read, always_2d=ALWAYS_2D)
 
 
 def write(path: str, data: np.ndarray, samplerate: int) -> None:

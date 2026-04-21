@@ -46,6 +46,9 @@ class FMix:
         assert len(ep) > 1
         return ep
 
+    def length(self) -> float:
+        return self.edit_points[-1].time_ - self.edit_points[0].time_
+
     def run(self) -> None:
         r = self.render()
         print(print_invocation(ff.get_args(r)), file=sys.stderr)
@@ -61,11 +64,16 @@ class FMix:
         return {k: ff.input(v) for k, v in self.files.inputs.items()}
 
     @cached_property
+    def samples_and_rates(self) -> dict[str, tuple[np.ndarray, int]]:
+        return {k: audio_file.read(v) for k, v in self.files.inputs.items()}
+
+    @cached_property
+    def rate(self) -> int:
+        return max(s for _, s in self.samples_and_rates.values())
+
+    @cached_property
     def samples(self) -> dict[str, np.ndarray]:
-        sample_rates = {k: audio_file.read(v) for k, v in self.files.inputs.items()}
-        if len(rates := {s for _, s in sample_rates.values()}) > 1:
-            raise NotImplementedError(f'Multiple sample rates {rates}')
-        return {k: d for k, (d, _) in sample_rates.items()}
+        return {k: d for k, (d, _) in self.samples_and_rates.items()}
 
     def _stream(self, a: EditPoint, b: EditPoint) -> InputNode:
         ins, levels = zip(

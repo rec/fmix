@@ -8,7 +8,7 @@ from fmix import audio_file
 def test_read_write():
     data, samplerate = audio_file.read('test/audio/one.m4a')
     assert samplerate == 48000
-    assert data.shape == (303104, 1)
+    assert data.shape == (303104,)
 
     with tdir():
         audio_file.write('out.m4a', data, samplerate)
