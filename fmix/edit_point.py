@@ -8,6 +8,7 @@ from ffmpeg.nodes import InputNode
 
 from fmix.curve import Curve
 from fmix.excepter import Excepter
+from fmix.time import parse_time
 
 
 @dc.dataclass(frozen=True)
@@ -37,7 +38,7 @@ class EditPoint:
 
     @cached_property
     def time_(self) -> float:
-        return _parse_time(self.time)
+        return parse_time(self.time)
 
     def check(self) -> None:
         with Excepter('EditPoint') as ex:
@@ -45,17 +46,3 @@ class EditPoint:
 
     def __lt__(self, other: EditPoint) -> bool:
         return self.time_ < other.time_
-
-
-def _parse_time(t: str | float | int) -> float | int:
-    if not isinstance(t, str):
-        return t
-    try:
-        seconds, _, fraction = t.partition('.')
-        parts = [int(i) for i in seconds.split(':')]
-        h, m, s = (3 - len(parts)) * [0] + parts
-        if fraction:
-            s += float(f'0.{fraction}')
-        return 3600 * h + 60 * m + s
-    except Exception as e:
-        raise ValueError(f'Cannot understand time {t}') from e
