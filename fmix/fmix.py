@@ -25,21 +25,24 @@ class FMix:
     files: Files = Files()
 
     def render(self) -> InputNode:
-        edit_points = sorted(self.edit_point)
-        if edit_points and edit_points[-1].mix:
-            edit_points.append(EditPoint(INF, {}))
-        assert len(edit_points) > 1
-
-        start, *streams, end = (self._stream(a, b) for a, b in pairwise(edit_points))
+        start, *rest, end = (self._stream(a, b) for a, b in pairwise(self.edit_points))
         if self.audio.fade_in:
             start = self.fade.fade(start, 'in')
         if self.audio.fade_out:
             end = self.fade.fade(end, 'out')
 
         stream = start
-        for s in (*streams, end):
+        for s in (*rest, end):
             stream = self.fade.crossfade(stream, s)
         return ff.output(stream, self.files.output)
+
+    @cached_property
+    def edit_points(self) -> list[EditPoint]:
+        ep = sorted(self.edit_point)
+        if ep and ep[-1].mix:
+            ep.append(EditPoint(INF, {}))
+        assert len(ep) > 1
+        return ep
 
     def run(self) -> None:
         r = self.render()
