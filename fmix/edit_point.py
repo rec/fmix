@@ -6,9 +6,9 @@ from functools import cached_property
 import ffmpeg as ff
 from ffmpeg.nodes import InputNode
 
-from fmix.curve import Curve
-from fmix.excepter import Excepter
-from fmix.time import parse_time
+from . import time
+from .curve import Curve
+from .excepter import Excepter
 
 
 @dc.dataclass(frozen=True)
@@ -33,12 +33,12 @@ class Fade:
 
 @dc.dataclass(frozen=True)
 class EditPoint:
-    time: float | str
+    time: float | int | str
     mix: dict[str, float]
 
     @cached_property
     def time_(self) -> float:
-        return parse_time(self.time)
+        return time.name_to_time(self.time)
 
     def check(self) -> None:
         with Excepter('EditPoint') as ex:
