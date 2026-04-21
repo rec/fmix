@@ -8,8 +8,10 @@ from itertools import pairwise
 from typing import Any
 
 import ffmpeg as ff
+import numpy as np
 from ffmpeg.nodes import InputNode
 
+from . import audio_file
 from .audio import INF, Audio, trim
 from .edit_point import EditPoint, Fade
 from .excepter import Excepter
@@ -57,6 +59,13 @@ class FMix:
     @cached_property
     def _inputs(self) -> dict[str, InputNode]:
         return {k: ff.input(v) for k, v in self.files.inputs.items()}
+
+    @cached_property
+    def samples(self) -> dict[str, np.ndarray]:
+        sample_rates = {k: audio_file.read(v) for k, v in self.files.inputs.items()}
+        if len(rates := {s for _, s in sample_rates.values()}) > 1:
+            raise NotImplementedError(f'Multiple sample rates {rates}')
+        return {k: d for k, (d, _) in sample_rates.items()}
 
     def _stream(self, a: EditPoint, b: EditPoint) -> InputNode:
         ins, levels = zip(
