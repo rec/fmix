@@ -1,0 +1,17 @@
+ffmpeg \
+ -i test/audio/one.m4a \
+ -i test/audio/two.m4a \
+ -i test/audio/three.m4a \
+ -filter_complex \
+[0]atrim=end=2.4200000000000004:start=1.11[s0];\
+[s0]aformat=sample_fmts=fltp[s1];\
+[s1]amix=normalize=False:weights=1[s2];\
+[s2]afade=duration=0.2:type=in[s3];\
+[1]atrim=end=3.2:start=2.22[s4];\
+[s4]aformat=sample_fmts=fltp[s5];\
+[2]atrim=end=3.2:start=2.22[s6];\
+[s6]aformat=sample_fmts=fltp[s7];\
+[s5][s7]amix=normalize=False:weights=1 1[s8];\
+[s8]afade=duration=0.2:type=out[s9];\
+[s3][s9]acrossfade=curve1=tri:curve2=tri:duration=0.2[s10] \
+ -map [s10] test/audio/short.m4a

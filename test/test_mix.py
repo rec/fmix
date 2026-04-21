@@ -9,8 +9,8 @@ from .invocation import run_invocation
 from .test_read_sample import REWRITE_TEST_DATA
 
 ROOT = Path('test/audio')
-MIX = ROOT / 'mix.m4a'
-INVOCATION_FILE = Path('test/mix.txt')
+MIX = ROOT / 'short.m4a'
+INVOCATION_FILE = Path('test/short.txt')
 
 
 def test_mix():
@@ -30,4 +30,10 @@ def test_mix():
         if test_mix:
             actual = tf.read_bytes()
             expected = MIX.read_bytes()
+            assert isinstance(actual, bytes)
+            assert isinstance(expected, bytes)
+            if actual != expected:
+                assert not 'actual == expected'
+
+            assert s is None
             assert actual == expected
