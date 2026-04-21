@@ -164,6 +164,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "ffmpeg-python" },
+    { name = "tdir" },
     { name = "tyro" },
 ]
 
@@ -182,6 +183,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ffmpeg-python", specifier = ">=0.2.0" },
+    { name = "tdir", specifier = ">=1.9.0" },
     { name = "tyro", specifier = ">=1.0.12" },
 ]
 
