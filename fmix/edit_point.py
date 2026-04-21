@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import dataclasses as dc
-from collections.abc import Iterator, Sequence
 from functools import cached_property
 
 from . import time
@@ -32,9 +31,3 @@ class Edit:
     edit_point: EditPoint
     start: float
     fade: Fade
-
-
-def edits(edit_points: Sequence[EditPoint], fade: Fade) -> Iterator[Edit]:
-    start = edit_points[0].time_
-    for ep in edit_points:
-        yield Edit(ep, ep.time_ - start, ep.fade or fade)

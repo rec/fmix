@@ -21,23 +21,11 @@ from .print_invocation import print_invocation
 
 
 @dc.dataclass(frozen=True)
-class FMix:
+class FMixBase:
     audio: Audio = Audio()
     edit_point: Sequence[EditPoint] = ()
     fade: Fade = Fade()
     files: Files = Files()
-
-    def render(self) -> InputNode:
-        start, *rest, end = (self._stream(a, b) for a, b in pairwise(self.edit_points))
-        if self.audio.fade_in:
-            start = self.fade.fade(start, 'in')
-        if self.audio.fade_out:
-            end = self.fade.fade(end, 'out')
-
-        stream = start
-        for s in (*rest, end):
-            stream = self.fade.crossfade(stream, s)
-        return ff.output(stream, self.files.output)
 
     @cached_property
     def edit_points(self) -> list[EditPoint]:
@@ -49,6 +37,37 @@ class FMix:
 
     def length(self) -> float:
         return self.edit_points[-1].time_ - self.edit_points[0].time_
+
+    @cached_property
+    def samples_and_rates(self) -> dict[str, tuple[np.ndarray, int]]:
+        return {k: audio_file.read(v) for k, v in self.files.inputs.items()}
+
+    @cached_property
+    def rate(self) -> int:
+        return max(r for _, r in self.samples_and_rates.values())
+
+    @cached_property
+    def sample_length(self) -> int:
+        # TODO: only makes sense when all are the same sample rate
+        return max(s.shape[0] for s, _ in self.samples_and_rates.values())
+
+    @cached_property
+    def samples(self) -> dict[str, np.ndarray]:
+        return {k: d for k, (d, _) in self.samples_and_rates.items()}
+
+
+class FMix(FMixBase):  # DEPRECATED below here
+    def render(self) -> InputNode:
+        start, *rest, end = (self._stream(a, b) for a, b in pairwise(self.edit_points))
+        if self.audio.fade_in:
+            start = self.fade.fade(start, 'in')
+        if self.audio.fade_out:
+            end = self.fade.fade(end, 'out')
+
+        stream = start
+        for s in (*rest, end):
+            stream = self.fade.crossfade(stream, s)
+        return ff.output(stream, self.files.output)
 
     def run(self) -> None:
         r = self.render()
@@ -63,22 +82,6 @@ class FMix:
     @cached_property
     def _inputs(self) -> dict[str, InputNode]:
         return {k: ff.input(v) for k, v in self.files.inputs.items()}
-
-    @cached_property
-    def samples_and_rates(self) -> dict[str, tuple[np.ndarray, int]]:
-        return {k: audio_file.read(v) for k, v in self.files.inputs.items()}
-
-    @cached_property
-    def rate(self) -> int:
-        return max(s for _, s in self.samples_and_rates.values())
-
-    @cached_property
-    def sample_length(self) -> int:
-        return max(s for _, s in self.samples_and_rates.values())
-
-    @cached_property
-    def samples(self) -> dict[str, np.ndarray]:
-        return {k: d for k, (d, _) in self.samples_and_rates.items()}
 
     def _stream(self, a: EditPoint, b: EditPoint) -> InputNode:
         ins, levels = zip(
