@@ -61,8 +61,11 @@ class FMixBase:
         return [min(length, round(self.rate * e.time_)) for e in self.edit_points]
 
     def render_samples(self) -> np.ndarray:
+        if not self.edit_points:
+            raise ValueError('No edit_points')
         length = self.sample_ends[-1] - self.sample_ends[0]
-        result = np.zeros(shape=(length, self.channels), dtype=DTYPE)
+        shape = audio_file.to_shape(length, self.channels)
+        result = np.zeros(shape=shape, dtype=DTYPE)
         begin = 0
         for end, ep in zip(self.sample_ends, self.edit_points, strict=True):
             F = round((ep.fade or self.fade).duration * self.rate)
@@ -74,10 +77,12 @@ class FMixBase:
                     mix = d
                 else:
                     mix += d
-
+            if mix is None:
+                continue
             mix[:F] *= np.linspace(0, 1, F, endpoint=False, dtype=DTYPE)
             mix[-F:] *= np.linspace(1, 0, F, endpoint=False, dtype=DTYPE)
-            result[begin : end + F] += mix
+            segment = result[begin : end + F]
+            segment += mix[: len(segment)]
             begin = end
 
         return result
