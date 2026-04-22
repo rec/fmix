@@ -19,6 +19,8 @@ from .fade import Fade
 from .files import Files
 from .print_invocation import print_invocation
 
+DTYPE = 'float32'
+
 
 @dc.dataclass(frozen=True)
 class FMixBase:
@@ -35,25 +37,50 @@ class FMixBase:
         assert len(ep) > 1
         return ep
 
-    def length(self) -> float:
-        return self.edit_points[-1].time_ - self.edit_points[0].time_
-
     @cached_property
-    def samples_and_rates(self) -> dict[str, tuple[np.ndarray, int]]:
+    def data_and_rates(self) -> dict[str, tuple[np.ndarray, int]]:
+        # TODO: convert integer samples to float!
+        # TODO: convert sample rates
         return {k: audio_file.read(v) for k, v in self.files.inputs.items()}
 
     @cached_property
     def rate(self) -> int:
-        return max(r for _, r in self.samples_and_rates.values())
+        return max(r for _, r in self.data_and_rates.values())
 
     @cached_property
-    def sample_length(self) -> int:
-        # TODO: only makes sense when all are the same sample rate
-        return max(s.shape[0] for s, _ in self.samples_and_rates.values())
+    def channels(self) -> int:
+        return max(len(s.shape) for s, _ in self.data_and_rates.values())
 
     @cached_property
-    def samples(self) -> dict[str, np.ndarray]:
-        return {k: d for k, (d, _) in self.samples_and_rates.items()}
+    def data(self) -> dict[str, np.ndarray]:
+        return {k: d for k, (d, _) in self.data_and_rates.items()}
+
+    @cached_property
+    def sample_ends(self) -> list[int]:
+        length = max(s.shape[0] for s, _ in self.data_and_rates.values())
+        return [min(length, round(self.rate * e.time_)) for e in self.edit_points]
+
+    def render_samples(self) -> np.ndarray:
+        length = self.sample_ends[-1] - self.sample_ends[0]
+        result = np.zeros(shape=(length, self.channels), dtype=DTYPE)
+        begin = 0
+        for end, ep in zip(self.sample_ends, self.edit_points, strict=True):
+            F = round((ep.fade or self.fade).duration * self.rate)
+
+            mix: np.ndarray | None = None
+            for k, v in ep.mix.items():
+                d = self.data[k][begin : end + F] * v
+                if mix is None:
+                    mix = d
+                else:
+                    mix += d
+
+            mix[:F] *= np.linspace(0, 1, F, endpoint=False, dtype=DTYPE)
+            mix[-F:] *= np.linspace(1, 0, F, endpoint=False, dtype=DTYPE)
+            result[begin : end + F] += mix
+            begin = end
+
+        return result
 
 
 class FMix(FMixBase):  # DEPRECATED below here

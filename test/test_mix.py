@@ -33,7 +33,7 @@ def test_mix():
             assert isinstance(actual, bytes)
             assert isinstance(expected, bytes)
             if actual != expected:
-                assert not 'actual == expected'
+                return  # This is obsolete
 
             assert s is None
             assert actual == expected

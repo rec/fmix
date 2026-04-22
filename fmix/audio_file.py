@@ -9,7 +9,7 @@ import tdir
 
 TEMP_FILE = 'tmp.flac'
 ERRORS = 'Format not recognised', 'unable to get format from file extension'
-ALWAYS_2D = False
+ALWAYS_2D = True
 
 
 def read(path: str) -> tuple[np.ndarray, int]:
