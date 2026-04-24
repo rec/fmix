@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import numpy as np
 import soundfile as sf
 from pytest import mark
 
@@ -11,8 +12,12 @@ assert len(BAD_FILES) == 2
 @mark.parametrize('filename', FILES)
 def test_sample_file(filename):
     try:
-        sf.read(filename)
+        data, samplerate = sf.read(filename)
     except sf.LibsndfileError as e:
         if filename not in BAD_FILES:
             raise
         assert 'Malformed' in e.error_string
+        return
+
+    assert data.dtype == np.dtype('float64')
+    assert -1.0 <= data.min() < data.max() <= 1.0
