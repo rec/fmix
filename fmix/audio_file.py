@@ -7,9 +7,10 @@ import numpy as np
 import soundfile as sf
 import tdir
 
+from .dsp import DTYPE
+
 TEMP_FILE = 'tmp.wav'
 ALWAYS_2D = False
-DTYPE = 'float32'
 
 
 def to_shape(*a: int) -> tuple[int, ...]:

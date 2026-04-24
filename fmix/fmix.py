@@ -13,13 +13,12 @@ from ffmpeg.nodes import InputNode
 
 from . import audio_file
 from .audio import INF, Audio, trim
+from .dsp import DTYPE
 from .edit_point import EditPoint
 from .excepter import Excepter
 from .fade import Fade
 from .files import Files
 from .print_invocation import print_invocation
-
-DTYPE = 'float32'
 
 
 @dc.dataclass(frozen=True)
