@@ -68,24 +68,29 @@ class FMixBase:
         result = np.zeros(shape=shape, dtype=DTYPE)
         begin = 0
         for end, ep in zip(self.sample_ends, self.edit_points, strict=True):
-            F = round((ep.fade or self.fade).duration * self.rate)
+            if ep.mix:
+                self.render_sample(begin, end, ep, result)
+            begin = end
+        return result
 
-            mix: np.ndarray | None = None
-            for k, v in ep.mix.items():
-                d = self.data[k][begin : end + F] * v
-                if mix is None:
-                    mix = d
-                else:
-                    mix += d
+    def render_sample(
+        self, begin: int, end: int, ep: EditPoint, result: np.ndarray
+    ) -> None:
+        F = round((ep.fade or self.fade).duration * self.rate)
+
+        mix: np.ndarray | None = None
+        for k, v in ep.mix.items():
+            d = self.data[k][begin : end + F] * v
             if mix is None:
-                continue
+                mix = d
+            else:
+                mix += d
+        assert mix is not None
+        if F:
             mix[:F] *= np.linspace(0, 1, F, endpoint=False, dtype=DTYPE)
             mix[-F:] *= np.linspace(1, 0, F, endpoint=False, dtype=DTYPE)
-            segment = result[begin : end + F]
-            segment += mix[: len(segment)]
-            begin = end
-
-        return result
+        segment = result[begin : end + F]
+        segment += mix[: len(segment)]
 
 
 class FMix(FMixBase):  # DEPRECATED below here
