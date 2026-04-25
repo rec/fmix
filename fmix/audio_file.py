@@ -1,6 +1,7 @@
 import os
 import subprocess
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -22,13 +23,19 @@ def read(path: str) -> tuple[np.ndarray, int]:
 
 
 def write(path: str, data: np.ndarray, samplerate: int) -> None:
-    _read_write(path, sf.write, data=data, samplerate=samplerate, subtype='FLOAT')
+    _read_write(path, sf.write, data=data, samplerate=samplerate)
 
 
 def _read_write(
-    p: str, func: Callable[..., Any], **kwargs: Any
+    p: str | Path, func: Callable[..., Any], **kwargs: Any
 ) -> tuple[np.ndarray, int]:
-    if str(p).endswith('.wav'):
+    p = Path(p)
+    fmt = p.suffix[1:].upper()
+    is_write = func is sf.write
+    if fmt in sf.available_formats():
+        if is_write:
+            subs = sf.available_subtypes(fmt)
+            kwargs['subtype'] = next(t for t in TYPES if t in subs)
         return func(p, **kwargs)
 
     def convert(in_file, out_file):
@@ -37,9 +44,12 @@ def _read_write(
 
     path = os.path.abspath(p)
     with tdir.tdir():
-        if func is sf.read:
+        if not is_write:
             convert(path, TEMP_FILE)
         r = func(TEMP_FILE, **kwargs)
-        if func is not sf.read:
+        if is_write:
             convert(TEMP_FILE, path)
         return r
+
+
+TYPES = 'DOUBLE FLOAT PCM_32 PCM_24 PCM_16 MPEG_LAYER_III'.split()
