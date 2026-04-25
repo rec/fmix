@@ -7,11 +7,15 @@ requires-python = ">=3.13"
 dependencies = [
     "ffmpeg-python>=0.2.0",
     "tdir>=1.9.0",
+    "tuney",
     "tyro>=1.0.12",
 ]
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.uv.sources]
+tuney = { path = "../tuney", editable = true }
 
 [dependency-groups]
 dev = [
