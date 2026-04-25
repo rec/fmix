@@ -12,8 +12,8 @@ class Audio:
     end: float | None = None
     gain: float = 1.0
     normalize: bool = True
-    fade_in: bool = True
-    fade_out: bool = True
+    fade_in: bool = True  # Not in use
+    fade_out: bool = True  # Not in use
 
 
 INF = float('inf')
