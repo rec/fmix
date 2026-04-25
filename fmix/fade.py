@@ -12,7 +12,7 @@ from fmix.excepter import Excepter
 @dc.dataclass(frozen=True)
 class Fade:
     curve: Curve = Curve.tri
-    duration: float = 1.0  # Negative means a gap!
+    duration: float = 1.0  # Negative means a gap? or is illegal?
 
     def crossfade(self, a: InputNode, b: InputNode) -> InputNode:
         c, d = self.curve, self.duration

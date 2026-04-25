@@ -10,8 +10,9 @@ import tdir
 
 from .dsp import DTYPE
 
-TEMP_FILE = 'tmp.wav'
+_TEMP_FILE = 'tmp.wav'
 ALWAYS_2D = False
+TYPES = 'DOUBLE', 'FLOAT', 'PCM_32', 'PCM_24', 'PCM_16', 'MPEG_LAYER_III'
 
 
 def to_shape(*a: int) -> tuple[int, ...]:
@@ -45,11 +46,8 @@ def _read_write(
     path = os.path.abspath(p)
     with tdir.tdir():
         if not is_write:
-            convert(path, TEMP_FILE)
-        r = func(TEMP_FILE, **kwargs)
+            convert(path, _TEMP_FILE)
+        r = func(_TEMP_FILE, **kwargs)
         if is_write:
-            convert(TEMP_FILE, path)
+            convert(_TEMP_FILE, path)
         return r
-
-
-TYPES = 'DOUBLE FLOAT PCM_32 PCM_24 PCM_16 MPEG_LAYER_III'.split()
