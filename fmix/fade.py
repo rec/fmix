@@ -1,19 +1,10 @@
 from __future__ import annotations
 
-import dataclasses as dc
+from pydantic import BaseModel, Field
 
-from fmix.curve import Curve
-from fmix.excepter import Excepter
+from .curve import Curve
 
 
-@dc.dataclass(frozen=True)
-class Fade:
+class Fade(BaseModel, frozen=True):
     curve: Curve = Curve.tri
-    duration: float = 1.0  # Negative means a gap? or is illegal?
-
-    def check(self) -> None:
-        with Excepter('Fade') as ex:
-            if self.curve == 'linear':
-                self.__dict__['curve'] = Curve.tri
-            else:
-                ex.call(Curve, self.curve)
+    duration: float = Field(default=1.0, ge=0.0)
