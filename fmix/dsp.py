@@ -1,17 +1,25 @@
+from enum import StrEnum, auto
+
 import numpy as np
 
 DTYPE = np.float64
 
 
-def normalize(data: np.ndarray, mutate: bool = True, expand: bool = True) -> np.ndarray:
-    assert np.issubdtype(data.dtype, np.floating)
-    scale = max(abs(data.max()), abs(data.min()))
-    if scale != 1.0 and (expand or scale > 1.0):
-        if mutate:
-            data /= scale
-        else:
-            data = data / scale
-    return data
+class Normalize(StrEnum):
+    none = auto()
+    limit = auto()
+    normalize = auto()
+
+    def __call__(self, data: np.ndarray, mutate: bool = True) -> np.ndarray:
+        assert np.issubdtype(data.dtype, np.floating)
+        if self != Normalize.none:
+            scale = max(abs(data.max()), abs(data.min()))
+            if scale != 1.0 and (self.normalize or scale > 1.0):
+                if mutate:
+                    data /= scale
+                else:
+                    data = data / scale
+        return data
 
 
 def to_float(data: np.ndarray) -> np.ndarray:

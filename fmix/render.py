@@ -22,7 +22,7 @@ def render_samples(fmix: FMix) -> np.ndarray:
         if not ep.mix:
             continue
 
-        F = round((ep.fade or fmix.fade).duration * fmix.rate)
+        F = fmix.samplerate((ep.fade or fmix.fade).duration)
         mix: np.ndarray | None = None
         for k, v in ep.mix.items():
             d = fmix.data[k][begin : end + F] * v
@@ -37,4 +37,4 @@ def render_samples(fmix: FMix) -> np.ndarray:
         segment = result[begin : end + F]
         segment += mix[: len(segment)]
 
-    return result
+    return fmix.audio(result, fmix.samplerate)

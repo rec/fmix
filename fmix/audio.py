@@ -3,27 +3,48 @@ from __future__ import annotations
 import datetime as dt
 from typing import Annotated
 
+import numpy as np
 from pydantic import AfterValidator, BaseModel
 
+from .dsp import Normalize
 
-def non_negative[T](x: T) -> T:
-    if x is None:
-        return x
-    if isinstance(x, (int, float)):
-        seconds = x
-    elif isinstance(x, dt.timedelta):
-        seconds = x.total_seconds()
-    else:
-        raise TypeError(f'{x=} {type(x)=}')
-    if seconds < 0:
+INF = float('inf')
+
+
+def non_negative(x: float | dt.timedelta | None):
+    if x is not None and _to_seconds(x) < 0:
         raise ValueError(f'{x} is negative')
     return x
 
 
+class SampleRate(int):
+    def __call__(self, time: float | dt.timedelta) -> int:
+        return max(round(self * _to_seconds(time)), 0)
+
+
 class Audio(BaseModel, frozen=True):
-    start: Annotated[dt.timedelta | None, AfterValidator(non_negative)] = None
+    begin: Annotated[dt.timedelta | None, AfterValidator(non_negative)] = None
     end: Annotated[dt.timedelta | None, AfterValidator(non_negative)] = None
-    gain: Annotated[float, AfterValidator(non_negative)] = 1.0
-    normalize: bool = True
-    fade_in: bool = True  # Not in use
-    fade_out: bool = True  # Not in use
+    gain: Annotated[float | None, AfterValidator(non_negative)] = None
+    normalize: Normalize = Normalize.normalize
+    clip_fade: Annotated[float, AfterValidator(non_negative)] = 0.2
+
+    def __call__(self, a: np.ndarray, samplerate: SampleRate) -> np.ndarray:
+        a = self.normalize(a)
+        F = min(samplerate(self.clip_fade), len(a) // 2)
+
+        if self.end is not None:
+            a = a[: samplerate(self.end)]
+            if F:
+                a[-F:] *= np.linspace(1, 0, F)
+        if self.begin is not None:
+            a = a[samplerate(self.begin) :]
+            if F:
+                a[:F] *= np.linspace(0, 1, F)
+        if self.gain is not None:
+            a *= self.gain
+        return a
+
+
+def _to_seconds(x: float | dt.timedelta) -> float:
+    return x.total_seconds() if isinstance(x, dt.timedelta) else x

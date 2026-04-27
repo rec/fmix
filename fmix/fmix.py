@@ -8,12 +8,10 @@ import numpy as np
 from pydantic import BaseModel
 
 from . import audio_file
-from .audio import Audio
+from .audio import INF, Audio, SampleRate
 from .edit_point import EditPoint
 from .fade import Fade
 from .files import Files
-
-INF = float('inf')
 
 
 class FMix(BaseModel, frozen=True):
@@ -35,8 +33,8 @@ class FMix(BaseModel, frozen=True):
         return {k: audio_file.read(v) for k, v in self.files.inputs.items()}
 
     @cached_property
-    def rate(self) -> int:
-        return max(r for _, r in self.data_and_rates.values())
+    def samplerate(self) -> SampleRate:
+        return SampleRate(max(r for _, r in self.data_and_rates.values()))
 
     @cached_property
     def channels(self) -> int:
@@ -49,4 +47,4 @@ class FMix(BaseModel, frozen=True):
     @cached_property
     def sample_ends(self) -> list[int]:
         m = max(s.shape[0] for s, _ in self.data_and_rates.values())
-        return [min(m, round(self.rate * e.seconds)) for e in self.edit_points]
+        return [min(m, self.samplerate(e.seconds)) for e in self.edit_points]
