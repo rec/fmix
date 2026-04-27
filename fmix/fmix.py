@@ -48,5 +48,5 @@ class FMix(BaseModel, frozen=True):
 
     @cached_property
     def sample_ends(self) -> list[int]:
-        length = max(s.shape[0] for s, _ in self.data_and_rates.values())
-        return [min(length, round(self.rate * e.seconds)) for e in self.edit_points]
+        m = max(s.shape[0] for s, _ in self.data_and_rates.values())
+        return [min(m, round(self.rate * e.seconds)) for e in self.edit_points]
