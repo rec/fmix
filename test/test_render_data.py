@@ -4,7 +4,7 @@ from numpy import testing
 from pytest import mark
 
 from fmix import audio_file
-from fmix.fmix import render_samples
+from fmix.render import render_samples
 
 from .invocation import REWRITE_TEST_DATA, make_fmix
 
