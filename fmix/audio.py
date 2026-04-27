@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-import dataclasses as dc
-
 import ffmpeg as ff
 from ffmpeg.nodes import InputNode
+from pydantic import BaseModel
 
 
-@dc.dataclass(frozen=True)
-class Audio:
+class Audio(BaseModel, frozen=True):
     start: float | None = None
     end: float | None = None
     gain: float = 1.0
