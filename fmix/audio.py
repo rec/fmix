@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import ffmpeg as ff
-from ffmpeg.nodes import InputNode
 from pydantic import BaseModel
+
+INF = float('inf')
 
 
 class Audio(BaseModel, frozen=True):
@@ -12,18 +12,3 @@ class Audio(BaseModel, frozen=True):
     normalize: bool = True
     fade_in: bool = True  # Not in use
     fade_out: bool = True  # Not in use
-
-
-INF = float('inf')
-
-
-def trim(
-    a: InputNode, start: float | None = None, end: float | None = None
-) -> InputNode:
-    kwargs = {}
-    if start is not None and start > 0:
-        kwargs['start'] = start
-    if end is not None and end != INF:
-        kwargs['end'] = end
-
-    return ff.filter(a, 'atrim', **kwargs) if kwargs else a

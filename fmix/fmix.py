@@ -1,28 +1,23 @@
 from __future__ import annotations
 
 import dataclasses as dc
-import sys
 from collections.abc import Sequence
 from functools import cached_property
-from itertools import pairwise
 from typing import Any
 
-import ffmpeg as ff
 import numpy as np
-from ffmpeg.nodes import InputNode
 
 from . import audio_file
-from .audio import INF, Audio, trim
+from .audio import INF, Audio
 from .dsp import DTYPE
 from .edit_point import EditPoint
 from .excepter import Excepter
 from .fade import Fade
 from .files import Files
-from .print_invocation import print_invocation
 
 
 @dc.dataclass(frozen=True)
-class FMixBase:
+class FMix:
     audio: Audio = Audio()
     edit_point: Sequence[EditPoint] = ()
     fade: Fade = Fade()
@@ -90,45 +85,6 @@ class FMixBase:
             mix[-F:] *= np.linspace(1, 0, F, endpoint=False, dtype=DTYPE)
         segment = result[begin : end + F]
         segment += mix[: len(segment)]
-
-
-class FMix(FMixBase):  # DEPRECATED below here
-    def render(self) -> InputNode:
-        start, *rest, end = (self._stream(a, b) for a, b in pairwise(self.edit_points))
-        if self.audio.fade_in:
-            start = self.fade.fade(start, 'in')
-        if self.audio.fade_out:
-            end = self.fade.fade(end, 'out')
-
-        stream = start
-        for s in (*rest, end):
-            stream = self.fade.crossfade(stream, s)
-        return ff.output(stream, self.files.output)
-
-    def run(self) -> None:
-        r = self.render()
-        print(print_invocation(ff.get_args(r)), file=sys.stderr)
-        try:
-            r.run()  # ty: ignore[unresolved-attribute]
-        except ff.Error as e:
-            print('ERROR from ffmpeg', e.stderr, e.stdout, sep='n')
-            raise ValueError('ffmpeg error') from None
-        print(self.files.output, 'written', file=sys.stdout)
-
-    @cached_property
-    def _inputs(self) -> dict[str, InputNode]:
-        return {k: ff.input(v) for k, v in self.files.inputs.items()}
-
-    def _stream(self, a: EditPoint, b: EditPoint) -> InputNode:
-        ins, levels = zip(
-            *((self._inputs[k], v) for k, v in a.mix.items()), strict=True
-        )
-
-        kwargs = {'start': a.time_, 'end': b.time_ + self.fade.duration}
-        trimmed = [trim(i, **kwargs) for i in ins]
-        formatted = [ff.filter(i, 'aformat', sample_fmts='fltp') for i in trimmed]
-        weights = ' '.join(str(i) for i in levels)
-        return ff.filter(formatted, 'amix', weights=weights, normalize=False)
 
 
 def make_fmix(**kwargs: Any) -> FMix:

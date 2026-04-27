@@ -7,7 +7,7 @@ inputs = {one = 'test/audio/one.m4a'}
 output = 'test/audio/trivial.wav'
 
 [fade]
-curve = 'linear'   # From ffmpeg
+curve = 'linear'
 duration = 0     # In seconds
 
 [[edit_point]]
