@@ -1,30 +1,22 @@
 from __future__ import annotations
 
-import dataclasses as dc
 import os
-from functools import cached_property
+from pathlib import Path
+from typing import Self
 
-from fmix.excepter import Excepter
+from pydantic import BaseModel, Field, FilePath, model_validator
 
 
-@dc.dataclass(frozen=True)
-class Files:
-    inputs: dict[str, str] = dc.field(default_factory=dict)
-    output: str = ''
+class Files(BaseModel, frozen=True):
+    inputs: dict[str, FilePath] = Field(default_factory=dict)
+    output: Path = Path('fmix-output.wav')
     overwrite: bool = True
 
-    @cached_property
-    def check(self) -> None:
-        with Excepter('Files') as ex:
-            non = (i for i in self.inputs.values() if not os.path.exists(i))
-            ex(*(FileNotFoundError(i) for i in non))
-            if os.path.exists(self.output):
-                if not self.overwrite:
-                    ex(FileExistsError(f'{self.output=} overwrites an existing file'))
-                else:
-                    try:
-                        if any(os.path.samefile(i, self.output) for i in self.inputs):
-                            msg = f'{self.output=} overwrites an input'
-                            ex(FileExistsError(msg), str(self))
-                    except FileNotFoundError:
-                        pass
+    @model_validator(mode='after')
+    def check_overwrite(self) -> Self:
+        if os.path.exists(self.output):
+            if not self.overwrite:
+                raise FileExistsError(f'{self.output=} overwrites an existing file')
+            if any(self.output.samefile(i) for i in self.inputs.values()):
+                raise FileExistsError(f'{self.output=} overwrites one of its inputs')
+        return self

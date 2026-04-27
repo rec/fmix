@@ -19,11 +19,11 @@ def to_shape(*a: int) -> tuple[int, ...]:
     return a if ALWAYS_2D or a[-1] != 1 else a[:-1]
 
 
-def read(path: str) -> tuple[np.ndarray, int]:
+def read(path: str | Path) -> tuple[np.ndarray, int]:
     return _read_write(path, sf.read, always_2d=ALWAYS_2D, dtype=DTYPE)
 
 
-def write(path: str, data: np.ndarray, samplerate: int) -> None:
+def write(path: str | Path, data: np.ndarray, samplerate: int) -> None:
     _read_write(path, sf.write, data=data, samplerate=samplerate)
 
 
