@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "ffmpeg-python>=0.2.0",
+    "pydantic>=2.13.3",
     "tdir>=1.9.0",
     "tuney",
     "tyro>=1.0.12",
