@@ -1,26 +1,23 @@
 from __future__ import annotations
 
-import dataclasses as dc
 import datetime as dt
 from collections.abc import Sequence
 from functools import cached_property
-from typing import Any
 
 import numpy as np
+from pydantic import BaseModel
 
 from . import audio_file
 from .audio import Audio
 from .dsp import DTYPE
 from .edit_point import EditPoint
-from .excepter import Excepter
 from .fade import Fade
 from .files import Files
 
 INF = float('inf')
 
 
-@dc.dataclass(frozen=True)
-class FMix:
+class FMix(BaseModel, frozen=True):
     audio: Audio = Audio()
     edit_point: Sequence[EditPoint] = ()
     fade: Fade = Fade()
@@ -88,18 +85,3 @@ class FMix:
             mix[-F:] *= np.linspace(1, 0, F, endpoint=False, dtype=DTYPE)
         segment = result[begin : end + F]
         segment += mix[: len(segment)]
-
-
-def make_fmix(**kwargs: Any) -> FMix:
-    with Excepter('FMix') as ex:
-        missing = [f.name for f in dc.fields(FMix) if f.name not in kwargs]
-        ex(*(f'Missing field {i}' for i in missing))
-        kwargs |= {k: {} for k in missing}
-
-        audio = ex.make(Audio, **kwargs.pop('audio'))
-        edit_point = [ex.make(EditPoint, **e) for e in kwargs.pop('edit_point')]
-        files = ex.make(Files, **kwargs.pop('files'))
-        fade = ex.make(Fade, **kwargs.pop('fade'))
-        ex(*(f'Unknown field: {k}' for k in kwargs))
-
-        return FMix(audio=audio, fade=fade, files=files, edit_point=edit_point)
