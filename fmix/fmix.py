@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses as dc
+import datetime as dt
 from collections.abc import Sequence
 from functools import cached_property
 from typing import Any
@@ -8,12 +9,14 @@ from typing import Any
 import numpy as np
 
 from . import audio_file
-from .audio import INF, Audio
+from .audio import Audio
 from .dsp import DTYPE
 from .edit_point import EditPoint
 from .excepter import Excepter
 from .fade import Fade
 from .files import Files
+
+INF = float('inf')
 
 
 @dc.dataclass(frozen=True)
@@ -27,7 +30,7 @@ class FMix:
     def edit_points(self) -> list[EditPoint]:
         ep = sorted(self.edit_point)
         if ep and ep[-1].mix:
-            ep.append(EditPoint(INF, {}))
+            ep.append(EditPoint(time=dt.timedelta(seconds=INF), mix={}))
         assert len(ep) > 1
         return ep
 
@@ -52,7 +55,7 @@ class FMix:
     @cached_property
     def sample_ends(self) -> list[int]:
         length = max(s.shape[0] for s, _ in self.data_and_rates.values())
-        return [min(length, round(self.rate * e.time_)) for e in self.edit_points]
+        return [min(length, round(self.rate * e.seconds)) for e in self.edit_points]
 
     def render_samples(self) -> np.ndarray:
         if not self.edit_points:

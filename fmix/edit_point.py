@@ -1,33 +1,23 @@
 from __future__ import annotations
 
-import dataclasses as dc
+from datetime import timedelta
 from functools import cached_property
+from typing import Annotated
 
-from . import time
-from .excepter import Excepter
+from annotated_types import Ge
+from pydantic import BaseModel
+
 from .fade import Fade
 
 
-@dc.dataclass(frozen=True)
-class EditPoint:
-    time: float | int | str
-    mix: dict[str, float]
-    fade: Fade | None = None  # in, out and crossfade!
+class EditPoint(BaseModel, frozen=True):
+    time: timedelta
+    mix: dict[str, Annotated[float, Ge(0)]]
+    fade: Fade | None = None
 
     @cached_property
-    def time_(self) -> float:
-        return time.name_to_time(self.time)
-
-    def check(self) -> None:
-        with Excepter('EditPoint') as ex:
-            ex.call(lambda: self.time_)
+    def seconds(self) -> float:
+        return self.time.total_seconds()
 
     def __lt__(self, other: EditPoint) -> bool:
-        return self.time_ < other.time_
-
-
-@dc.dataclass(frozen=True)
-class Edit:
-    edit_point: EditPoint
-    start: float
-    fade: Fade
+        return self.seconds < other.seconds

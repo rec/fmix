@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-INF = float('inf')
-
 
 class Audio(BaseModel, frozen=True):
     start: float | None = None
