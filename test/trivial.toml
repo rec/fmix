@@ -1,0 +1,15 @@
+[audio]
+gain = 1.0
+normalize = true
+
+[files]
+inputs = {one = 'test/audio/one.m4a'}
+output = 'test/audio/trivial.wav'
+
+[fade]
+curve = 'linear'   # From ffmpeg
+duration = 0     # In seconds
+
+[[edit_point]]
+time = 0
+mix = {one = 1}
