@@ -4,7 +4,8 @@ import numpy as np
 import soundfile as sf
 from pytest import mark
 
-FILES = sorted(str(p) for p in Path('samples/www-mmsp.ece.mcgill.ca/').glob('**/*.wav'))
+MCGILL = Path('test/audio/www-mmsp.ece.mcgill.ca/')
+FILES = sorted(str(p) for p in MCGILL.glob('**/*.wav'))
 BAD_FILES = [f for f in FILES if f.endswith(('voxware.wav', 'truspech.wav'))]
 assert len(BAD_FILES) == 2
 
