@@ -1,31 +1,34 @@
 from __future__ import annotations
 
 from itertools import pairwise
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 from fmix import audio_file
 from fmix.dsp import DTYPE
-from fmix.fmix import FMix
+
+if TYPE_CHECKING:
+    from fmix.fmix import FMix
 
 
-def render_samples(fmix: FMix) -> np.ndarray:
-    if not fmix.edit_points:
+def render_samples(f: FMix) -> np.ndarray:
+    if not f.edit_points:
         raise ValueError('No edit_points')
 
-    length = fmix.sample_ends[-1] - fmix.sample_ends[0]
-    shape = audio_file.to_shape(length, fmix.channels)
+    length = f.sample_ends[-1] - f.sample_ends[0]
+    shape = audio_file.to_shape(length, f.channels)
     result = np.zeros(shape=shape, dtype=DTYPE)
 
-    begin_end = pairwise([0] + fmix.sample_ends)
-    for (begin, end), ep in zip(begin_end, fmix.edit_points, strict=True):
+    begin_end = pairwise([0] + f.sample_ends)
+    for (begin, end), ep in zip(begin_end, f.edit_points, strict=True):
         if not ep.mix:
             continue
 
-        F = fmix.samplerate((ep.fade or fmix.fade).duration)
+        F = f.samplerate((ep.fade or f.fade).duration)
         mix: np.ndarray | None = None
         for k, v in ep.mix.items():
-            d = fmix.data[k][begin : end + F] * v
+            d = f.data[k][begin : end + F] * v
             if mix is None:
                 mix = d
             else:
@@ -37,4 +40,4 @@ def render_samples(fmix: FMix) -> np.ndarray:
         segment = result[begin : end + F]
         segment += mix[: len(segment)]
 
-    return fmix.audio(result, fmix.samplerate)
+    return f.audio(result, f.samplerate)
