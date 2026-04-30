@@ -12,6 +12,9 @@ dependencies = [
     "tyro>=1.0.12",
 ]
 
+[tool.uv]
+package = true
+
 [tool.ruff.format]
 quote-style = "single"
 
@@ -29,3 +32,6 @@ dev = [
     "tomlkit>=0.14.0",
     "ty>=0.0.28",
 ]
+
+[project.scripts]
+fmix = "fmix.__main__:main"
