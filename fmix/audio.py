@@ -5,17 +5,22 @@ from typing import Annotated
 
 import numpy as np
 from pydantic import AfterValidator, BaseModel
+import tyro
 
 from .dsp import Normalize
+from .time import name_to_time
 
 INF = float('inf')
 
 
+@AfterValidator
 def non_negative(x: float | dt.timedelta | None):
     if x is not None and _to_seconds(x) < 0:
         raise ValueError(f'{x} is negative')
     return x
 
+
+to_timedelta = tyro.conf.arg(constructor=name_to_time)
 
 class SampleRate(int):
     def __call__(self, time: float | dt.timedelta) -> int:
@@ -23,11 +28,11 @@ class SampleRate(int):
 
 
 class Audio(BaseModel, frozen=True):
-    begin: Annotated[dt.timedelta | None, AfterValidator(non_negative)] = None
-    end: Annotated[dt.timedelta | None, AfterValidator(non_negative)] = None
-    gain: Annotated[float | None, AfterValidator(non_negative)] = None
+    begin: Annotated[dt.timedelta | None, non_negative, to_timedelta] = None
+    end: Annotated[dt.timedelta | None, non_negative, to_timedelta] = None
+    gain: Annotated[float | None, non_negative] = None
     normalize: Normalize = Normalize.normalize
-    clip_fade: Annotated[float, AfterValidator(non_negative)] = 0.2
+    clip_fade: Annotated[float, non_negative] = 0.2
 
     def __call__(self, a: np.ndarray, samplerate: SampleRate) -> np.ndarray:
         a = self.normalize(a)
