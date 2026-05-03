@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import datetime as dt
 import sys
+import tomllib
 from collections.abc import Sequence
 from functools import cached_property
+from pathlib import Path
 
 import numpy as np
 from pydantic import BaseModel
@@ -64,3 +66,8 @@ class FMix(BaseModel, frozen=True):
         if self.sound or self.files.output is None:
             player = DataPlayer(SampleData(result, self.samplerate))
             player.run()
+
+
+def read_fmix(path: Path) -> FMix:
+    with open(path) as fp:
+        return FMix(**tomllib.loads(fp.read()))
