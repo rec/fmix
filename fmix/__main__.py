@@ -1,19 +1,9 @@
-from pathlib import Path
-
-import tyro
-
 from . import fmix
 
 
-class FMix(fmix.FMix, frozen=True):
-    config_file: Path | None = None
-
-
 def main():
-    from .audio import Audio
-
-    args = tyro.cli(Audio)
-    print(args)
+    f = fmix.FMix.from_tyro()
+    assert f or not f
 
 
 if __name__ == '__main__':

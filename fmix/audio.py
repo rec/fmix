@@ -4,8 +4,8 @@ import datetime as dt
 from typing import Annotated
 
 import numpy as np
-from pydantic import AfterValidator, BaseModel
 import tyro
+from pydantic import AfterValidator, BaseModel
 
 from .dsp import Normalize
 from .time import name_to_time
@@ -20,16 +20,22 @@ def non_negative(x: float | dt.timedelta | None):
     return x
 
 
-to_timedelta = tyro.conf.arg(constructor=name_to_time)
-
 class SampleRate(int):
     def __call__(self, time: float | dt.timedelta) -> int:
         return max(round(self * _to_seconds(time)), 0)
 
 
 class Audio(BaseModel, frozen=True):
-    begin: Annotated[dt.timedelta | None, non_negative, to_timedelta] = None
-    end: Annotated[dt.timedelta | None, non_negative, to_timedelta] = None
+    begin: Annotated[
+        dt.timedelta | None,
+        non_negative,
+        tyro.conf.arg(constructor=name_to_timedelta, aliases=['-b']),
+    ] = None
+    end: Annotated[
+        dt.timedelta | None,
+        non_negative,
+        tyro.conf.arg(constructor=name_to_timedelta, aliases=['-e']),
+    ] = None
     gain: Annotated[float | None, non_negative] = None
     normalize: Normalize = Normalize.normalize
     clip_fade: Annotated[float, non_negative] = 0.2
