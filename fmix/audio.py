@@ -8,9 +8,10 @@ import tyro
 from pydantic import AfterValidator, BaseModel
 
 from .dsp import Normalize
-from .time import name_to_time
+from .time import name_to_timedelta
 
 INF = float('inf')
+PRE = True
 
 
 @AfterValidator
@@ -29,12 +30,12 @@ class Audio(BaseModel, frozen=True):
     begin: Annotated[
         dt.timedelta | None,
         non_negative,
-        tyro.conf.arg(constructor=name_to_timedelta, aliases=['-b']),
+        tyro.conf.arg(constructor=name_to_timedelta, aliases=['-b'], prefix_name=PRE),
     ] = None
     end: Annotated[
         dt.timedelta | None,
         non_negative,
-        tyro.conf.arg(constructor=name_to_timedelta, aliases=['-e']),
+        tyro.conf.arg(constructor=name_to_timedelta, aliases=['-e'], prefix_name=PRE),
     ] = None
     gain: Annotated[float | None, non_negative] = None
     normalize: Normalize = Normalize.normalize

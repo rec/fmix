@@ -1,4 +1,5 @@
 from __future__ import annotations
+import datetime as dt
 
 
 def time_to_name(time: float) -> str:
@@ -25,3 +26,7 @@ def name_to_time(time: str | float | int) -> float:
     except ValueError:
         raise ValueError(f"Can't understand numbers in {time=}") from None
     return 3600 * h + 60 * m + s
+
+
+def name_to_timedelta(time: str | float | int) -> dt.timedelta:
+    return dt.timedelta(seconds=name_to_time(time))
