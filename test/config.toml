@@ -1,0 +1,34 @@
+[audio]
+gain = 1.0
+normalize = "normalize"
+clip_fade = 0.2
+
+[[edit_point]]
+time = 1.11
+
+[edit_point.mix]
+one = 1.0
+
+[[edit_point]]
+time = 2.22
+
+[edit_point.mix]
+two = 1.0
+three = 1.0
+
+[[edit_point]]
+time = 3.0
+
+[fade]
+curve = "tri"
+duration = 0.2
+
+[files]
+output = "test/audio/short.m4a"
+overwrite = true
+
+[files.inputs]
+one = "test/audio/one.m4a"
+two = "test/audio/two.m4a"
+three = "test/audio/three.m4a"
+

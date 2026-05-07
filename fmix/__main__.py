@@ -33,8 +33,9 @@ def read_fmix(path: Path) -> FMix:
 
 def main():
     cli = partial(tyro.cli, FMix, prog='fmix')
-    f = cli()
-    return cli(default=read_fmix(f.config_file)) if f.config_file else f
+    if (f := cli()).config_file:
+        f = cli(default=read_fmix(f.config_file))
+    f()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 from numpy import testing
@@ -10,7 +9,8 @@ from fmix import audio_file
 from fmix.__main__ import read_fmix
 from fmix.render import render_samples
 
-REWRITE_TEST_DATA = os.environ.get('REWRITE_TEST_DATA')
+from . import REWRITE_TEST_DATA
+
 RESULT_FILE = Path('test/audio/result.wav')
 ENABLED = False  # This is obsolete anyway
 
