@@ -91,7 +91,9 @@ class FMix(BaseModel, frozen=True):
     def from_tyro(**kwargs: Any) -> FMix:
         fmix = tyro.cli(FMix, **kwargs)
         if fmix.config_file:
-            fmix = tyro.cli(FMix, default=read_fmix(fmix.config_file), **kwargs)
+            fmix = tyro.cli(
+                FMix, prog='fmix', default=read_fmix(fmix.config_file), **kwargs
+            )
         return fmix
 
 
