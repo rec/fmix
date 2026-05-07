@@ -212,6 +212,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "tdir" },
+    { name = "tomlkit" },
     { name = "tuney" },
     { name = "tyro" },
 ]
@@ -233,6 +234,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.13.3" },
     { name = "pydantic-settings", specifier = ">=2.14.0" },
     { name = "tdir", specifier = ">=1.9.0" },
+    { name = "tomlkit", specifier = ">=0.14.0" },
     { name = "tuney", editable = "../tuney" },
     { name = "tyro", specifier = ">=1.0.12" },
 ]
