@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-import json
 import sys
-import tomllib
-from collections.abc import Iterator, Sequence
+from collections.abc import Sequence
 from functools import cached_property
 from pathlib import Path
-from typing import Annotated, Any, TypeIs
+from typing import Annotated, Any
 
 import numpy as np
 import tyro
-from pydantic import BaseModel
+from pydantic import AfterValidator, BaseModel
 from tuney.audio.players import DataPlayer
 from tuney.audio.sample_data import SampleData
 
@@ -20,6 +18,13 @@ from .edit_point import EditPoint
 from .fade import Fade
 from .files import Files
 from .render import render_samples
+
+
+@AfterValidator
+def non_empty(x: Any):
+    if x:
+        return x
+    raise ValueError('Cannot be empty')
 
 
 class FMix(BaseModel, frozen=True):
@@ -32,10 +37,10 @@ class FMix(BaseModel, frozen=True):
 
     dump_config: Annotated[
         bool,
-        tyro.conf.arg(aliases=['-d'], help='Dump config as toml'),
+        tyro.conf.arg(aliases=['-d'], help='Dump config as toml and exit'),
     ] = False
 
-    edit_point: Sequence[EditPoint] = ()
+    edit_point: Annotated[Sequence[EditPoint], non_empty] = ()
     fade: Fade = Fade()
     files: Files = Files()
 
@@ -86,43 +91,3 @@ class FMix(BaseModel, frozen=True):
         if self.play or self.files.output is None:
             player = DataPlayer(SampleData(result, self.samplerate))
             player.run()
-
-    @staticmethod
-    def from_tyro(**kwargs: Any) -> FMix:
-        fmix = tyro.cli(FMix, **kwargs)
-        if fmix.config_file:
-            fmix = tyro.cli(
-                FMix, prog='fmix', default=read_fmix(fmix.config_file), **kwargs
-            )
-        return fmix
-
-
-def is_str_dict(x: Any) -> TypeIs[dict[str, Any]]:
-    return isinstance(x, dict) and all(isinstance(k, str) for k in x.keys())
-
-
-def read_file(path: Path) -> dict[str, Any]:
-    data = path.read_text()
-    match path.suffix:
-        case '.toml':
-            result = tomllib.loads(data)
-        case '.json':
-            result = json.loads(data)
-        case _:
-            raise ValueError(f'Do not understand file {path}')
-    if not is_str_dict(result):
-        raise ValueError(f'File {path} does not contain a string dictionary')
-    return result
-
-
-def read_fmix(path: Path) -> FMix:
-    return FMix(**read_file(path))
-
-
-def dict_keys(d: dict[str, Any], *keys: str) -> Iterator[tuple[str, ...]]:
-    # Delete if tyro does its schtuff
-    for k, v in d.items():
-        if isinstance(v, dict):
-            yield from dict_keys(v, *keys, k)
-        else:
-            yield (*keys, k)

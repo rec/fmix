@@ -1,4 +1,4 @@
-usage: /Users/tom/code/fmix/.venv/bin/fmix [-h] [OPTIONS]
+usage: fmix [-h] [OPTIONS]
 
 ╭─ options ────────────────────────────────────────────────────────────────────╮
 │ -h, --help                                                                   │
@@ -6,7 +6,7 @@ usage: /Users/tom/code/fmix/.venv/bin/fmix [-h] [OPTIONS]
 │ -c {None}|PATH, --config-file {None}|PATH                                    │
 │       Load configs from a JSON or toml file (default: None)                  │
 │ -d, --dump-config, --no-dump-config                                          │
-│       Dump config as toml (default: False)                                   │
+│       Dump config as toml and exit (default: False)                          │
 │ -p {None,True,False}, --play {None,True,False}                               │
 │       Play mix through speakers. If not set, play if no files.output         │
 │       (default: None)                                                        │
