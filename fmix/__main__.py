@@ -1,9 +1,11 @@
 import json
-import tomllib
+import sys
+import tomlkit
 from functools import partial
 from pathlib import Path
 from typing import Any, TypeIs
 
+from pydantic import ValidationError
 import tyro
 
 from .fmix import FMix
@@ -17,7 +19,7 @@ def read_file(path: Path) -> dict[str, Any]:
     data = path.read_text()
     match path.suffix:
         case '.toml':
-            result = tomllib.loads(data)
+            result = tomlkit.loads(data)
         case '.json':
             result = json.loads(data)
         case _:
@@ -35,7 +37,10 @@ def main():
     cli = partial(tyro.cli, FMix, prog='fmix')
     if (f := cli()).config_file:
         f = cli(default=read_fmix(f.config_file))
-    f()
+    try:
+        f()
+    except ValidationError as e:
+        sys.exit(e)
 
 
 if __name__ == '__main__':
