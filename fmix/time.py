@@ -1,5 +1,9 @@
 from __future__ import annotations
-import datetime as dt
+
+import json
+from typing import Annotated
+
+import tyro
 
 
 def time_to_name(time: float) -> str:
@@ -28,5 +32,13 @@ def name_to_time(time: str | float | int) -> float:
     return 3600 * h + 60 * m + s
 
 
-def name_to_timedelta(time: str | float | int) -> dt.timedelta:
-    return dt.timedelta(seconds=name_to_time(time))
+Duration = Annotated[
+    float,
+    tyro.constructors.PrimitiveConstructorSpec(
+        nargs=1,
+        metavar='TIME',
+        instance_from_str=lambda a: name_to_time(a[0]),
+        is_instance=lambda x: isinstance(x, float),
+        str_from_instance=lambda x: [json.dumps(x)],
+    ),
+]

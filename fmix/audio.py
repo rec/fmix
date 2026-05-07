@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime as dt
 from typing import Annotated
 
 import numpy as np
@@ -8,34 +7,34 @@ import tyro
 from pydantic import AfterValidator, BaseModel
 
 from .dsp import Normalize
-from .time import name_to_timedelta
+from .time import Duration
 
 INF = float('inf')
-PRE = True
+PRE = not True
 
 
 @AfterValidator
-def non_negative(x: float | dt.timedelta | None):
-    if x is not None and _to_seconds(x) < 0:
-        raise ValueError(f'{x} is negative')
-    return x
+def non_negative(x: float | None):
+    if x is None or x >= 0:
+        return x
+    raise ValueError(f'{x} is negative')
 
 
 class SampleRate(int):
-    def __call__(self, time: float | dt.timedelta) -> int:
-        return max(round(self * _to_seconds(time)), 0)
+    def __call__(self, time: float) -> int:
+        return max(round(self * time), 0)
 
 
 class Audio(BaseModel, frozen=True):
     begin: Annotated[
-        dt.timedelta | None,
+        Duration | None,
         non_negative,
-        tyro.conf.arg(constructor=name_to_timedelta, aliases=['-b'], prefix_name=PRE),
+        tyro.conf.arg(aliases=['-b'], prefix_name=PRE),
     ] = None
     end: Annotated[
-        dt.timedelta | None,
+        Duration | None,
         non_negative,
-        tyro.conf.arg(constructor=name_to_timedelta, aliases=['-e'], prefix_name=PRE),
+        tyro.conf.arg(aliases=['-e'], prefix_name=PRE),
     ] = None
     gain: Annotated[float | None, non_negative] = None
     normalize: Normalize = Normalize.normalize
@@ -56,7 +55,3 @@ class Audio(BaseModel, frozen=True):
         if self.gain is not None:
             a *= self.gain
         return a
-
-
-def _to_seconds(x: float | dt.timedelta) -> float:
-    return x.total_seconds() if isinstance(x, dt.timedelta) else x

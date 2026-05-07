@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime as dt
 import json
 import sys
 import tomllib
@@ -52,7 +51,7 @@ class FMix(BaseModel, frozen=True):
     def edit_points(self) -> list[EditPoint]:
         ep = sorted(self.edit_point)
         if ep and ep[-1].mix:
-            ep.append(EditPoint(time=dt.timedelta(seconds=INF), mix={}))
+            ep.append(EditPoint(time=INF))
         assert len(ep) > 1
         return ep
 
@@ -75,7 +74,7 @@ class FMix(BaseModel, frozen=True):
     @cached_property
     def sample_ends(self) -> list[int]:
         m = max(s.shape[0] for s, _ in self.data_and_rates.values())
-        return [min(m, self.samplerate(e.seconds)) for e in self.edit_points]
+        return [min(m, self.samplerate(e.time)) for e in self.edit_points]
 
     def __call__(self) -> None:
         result = self.audio(render_samples(self), self.samplerate)
