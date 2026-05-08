@@ -1,12 +1,12 @@
 import json
 import sys
-import tomlkit
+import tomllib
 from functools import partial
 from pathlib import Path
 from typing import Any, TypeIs
 
-from pydantic import ValidationError
 import tyro
+from pydantic import ValidationError
 
 from .fmix import FMix
 
@@ -19,7 +19,7 @@ def read_file(path: Path) -> dict[str, Any]:
     data = path.read_text()
     match path.suffix:
         case '.toml':
-            result = tomlkit.loads(data)
+            result = tomllib.loads(data)
         case '.json':
             result = json.loads(data)
         case _:
@@ -34,10 +34,10 @@ def read_fmix(path: Path) -> FMix:
 
 
 def main():
-    cli = partial(tyro.cli, FMix, prog='fmix')
-    if (f := cli()).config_file:
-        f = cli(default=read_fmix(f.config_file))
     try:
+        cli = partial(tyro.cli, FMix, prog='fmix')
+        if (f := cli()).config_file:
+            f = cli(default=read_fmix(f.config_file))
         f()
     except ValidationError as e:
         sys.exit(e)

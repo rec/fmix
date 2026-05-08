@@ -37,14 +37,16 @@ class FMix(BaseModel, frozen=True):
     edit_point: Sequence[EditPoint] = ()
     fade: Fade = Fade()
     files: Files = Files()
+    # play: bool = False
 
     play: Annotated[
-        bool | None,
+        bool,
         tyro.conf.arg(
             aliases=['-p'],
             help='Play mix through speakers. If not set, play if no files.output',
+            default=None,
         ),
-    ] = None
+    ] = False
 
     @cached_property
     def edit_points(self) -> list[EditPoint]:
