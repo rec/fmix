@@ -731,7 +731,7 @@ wheels = [
 
 [[package]]
 name = "tuney"
-version = "0.2.1"
+version = "0.3.0"
 source = { editable = "../tuney" }
 dependencies = [
     { name = "customtkinter" },
