@@ -40,7 +40,7 @@ def main():
             f = cli(default=read_fmix(f.config_file))
         f()
     except ValidationError as e:
-        sys.exit(e)
+        sys.exit(str(e))
 
 
 if __name__ == '__main__':
