@@ -1,6 +1,6 @@
 [project]
 name = "fmix"
-version = "0.1.0"
+version = "0.2.0"
 description = "🎧 A scripted track mixer 🎧"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -39,7 +39,7 @@ fmix = "fmix.__main__:main"
 
 [tool.poetry]
 name = "fmix"
-version = "0.1.0"
+version = "0.2.0"
 description = "🎧 A scripted track mixer 🎧"
 authors = ["Tom Ritchford <tom@swirly.com>"]
 readme = "README.md"
