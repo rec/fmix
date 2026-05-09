@@ -36,3 +36,18 @@ dev = [
 
 [project.scripts]
 fmix = "fmix.__main__:main"
+
+[tool.poetry]
+name = "fmix"
+version = "0.1.0"
+description = "🎧 A scripted track mixer 🎧"
+authors = ["Tom Ritchford <tom@swirly.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.13"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
