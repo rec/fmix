@@ -236,7 +236,7 @@ requires-dist = [
     { name = "tdir", specifier = ">=1.9.0" },
     { name = "tomlkit", specifier = ">=0.14.0" },
     { name = "tuney", editable = "../tuney" },
-    { name = "tyro", specifier = ">=1.0.12" },
+    { name = "tyro", git = "https://github.com/brentyi/tyro?rev=bb8e67e" },
 ]
 
 [package.metadata.requires-dev]
@@ -843,16 +843,12 @@ wheels = [
 
 [[package]]
 name = "tyro"
-version = "1.0.12"
-source = { registry = "https://pypi.org/simple" }
+version = "1.0.13"
+source = { git = "https://github.com/brentyi/tyro?rev=bb8e67e#bb8e67e77ad36b2e06600001ba54cbdaf78667cb" }
 dependencies = [
     { name = "docstring-parser" },
     { name = "typeguard" },
     { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/aa/3e/96397637152a9ce368a575e88e1782a9fe4640a3950e26805ec9cca569c1/tyro-1.0.12.tar.gz", hash = "sha256:b49177ab9668e0c9255025d3936b6647cc07537ca04a4ed34362099907508ba2", size = 489159, upload-time = "2026-04-02T09:48:58.294Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/8e/fa21200c7fcebdbc5a1f7ebe2d437d69b0723bfaeea843c846b99248b2ba/tyro-1.0.12-py3-none-any.whl", hash = "sha256:d9c7b65e05c1b6760204bcb4d0b1ef76f235b16f1423d056a0d36814c2df902d", size = 185245, upload-time = "2026-04-02T09:48:56.808Z" },
 ]
 
 [[package]]

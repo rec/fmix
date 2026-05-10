@@ -21,6 +21,7 @@ quote-style = "single"
 
 [tool.uv.sources]
 tuney = { path = "../tuney", editable = true }
+tyro = { git = "https://github.com/brentyi/tyro", rev = "bb8e67e" }
 
 [dependency-groups]
 dev = [
