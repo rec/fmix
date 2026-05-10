@@ -11,5 +11,6 @@ def non_negative(x: float | None):
     raise ValueError(f'{x} is negative')
 
 
-def tyro_arg(*aliases: str, **kwargs: Any) -> Any:
-    return tyro.conf.arg(aliases=aliases, prefix_name=False)
+def tyro_arg(alias: str, **kwargs: Any) -> Any:
+    assert alias.startswith('-'), alias
+    return tyro.conf.arg(aliases=[alias], prefix_name=False)
