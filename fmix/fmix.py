@@ -59,14 +59,12 @@ class FMix(BaseModel, frozen=True):
     def data(self) -> dict[str, np.ndarray]:
         return {k: d for k, (d, _) in self._data_and_rates.items()}
 
-    def __call__(self) -> None:
+    def __call__(self) -> str | None:
         if self.dump_config:
             print(dump(self))
             return
-
         if self.files.output is None and not self.play:
-            print('Nothing to do', file=sys.stderr)
-            return
+            return 'Nothing to do'
 
         result = self.audio(render_samples(self), self.samplerate)
         if self.files.output is not None:
