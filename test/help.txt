@@ -12,6 +12,8 @@ usage: fmix [-h] [OPTIONS]
 │ -p, --play, --no-play                                                        │
 │       Play mix through speakers. If not set, play if no files.output.        │
 │       (default: None)                                                        │
+│ -v, --verbose, --no-verbose                                                  │
+│       Print more information (default: False)                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ audio options ──────────────────────────────────────────────────────────────╮
 │ -b {None}|TIME, --begin {None}|TIME                                          │
@@ -28,12 +30,12 @@ usage: fmix [-h] [OPTIONS]
 │       How to fade the begin/end clipping (default: 0.2)                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ fade options ───────────────────────────────────────────────────────────────╮
-│ -v {tri,qsin,hsin,esin,log,ipar,qua,cub,squ,cbr,par,exp,iqsin,ihsin,dese,    │
+│ -C {tri,qsin,hsin,esin,log,ipar,qua,cub,squ,cbr,par,exp,iqsin,ihsin,dese,    │
 │ desi,losi,sinc,isinc,quat,quatr,qsin2,hsin2,nofade}, --curve {tri,qsin,hsin, │
 │ esin,log,ipar,qua,cub,squ,cbr,par,exp,iqsin,ihsin,dese,desi,losi,sinc,isinc, │
 │ quat,quatr,qsin2,hsin2,nofade}                                               │
 │       The curve to use for fades (default: tri)                              │
-│ -u FLOAT, --duration FLOAT                                                   │
+│ -D FLOAT, --duration FLOAT                                                   │
 │       How long fades in or out last, in seconds (default: 1.0)               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ files options ──────────────────────────────────────────────────────────────╮

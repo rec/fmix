@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -19,16 +20,18 @@ def to_shape(*a: int) -> tuple[int, ...]:
     return a if ALWAYS_2D or a[-1] != 1 else a[:-1]
 
 
-def read(path: str | Path) -> tuple[np.ndarray, int]:
-    return _read_write(path, sf.read, always_2d=ALWAYS_2D, dtype=DTYPE)
+def read(path: str | Path, verbose: bool = False) -> tuple[np.ndarray, int]:
+    return _read_write(path, sf.read, verbose, always_2d=ALWAYS_2D, dtype=DTYPE)
 
 
-def write(path: str | Path, data: np.ndarray, samplerate: int) -> None:
-    _read_write(path, sf.write, data=data, samplerate=samplerate)
+def write(
+    path: str | Path, data: np.ndarray, samplerate: int, verbose: bool = False
+) -> None:
+    _read_write(path, sf.write, verbose, data=data, samplerate=samplerate)
 
 
 def _read_write(
-    p: str | Path, func: Callable[..., Any], **kwargs: Any
+    p: str | Path, func: Callable[..., Any], verbose: bool, **kwargs: Any
 ) -> tuple[np.ndarray, int]:
     p = Path(p)
     fmt = p.suffix[1:].upper()
@@ -41,6 +44,8 @@ def _read_write(
 
     def convert(in_file, out_file):
         cmd = 'ffmpeg', '-i', in_file, out_file
+        if verbose:
+            print('$', *cmd, file=sys.stderr)
         subprocess.run(cmd, text=True, capture_output=True)
 
     path = os.path.abspath(p)

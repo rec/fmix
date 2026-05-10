@@ -10,7 +10,7 @@ from .curve import Curve
 
 class Fade(BaseModel, frozen=True):
     # The curve to use for fades
-    curve: Annotated[Curve, tyro_arg('-v')] = Curve.tri
+    curve: Annotated[Curve, tyro_arg('-C')] = Curve.tri
 
     # How long fades in or out last, in seconds
-    duration: Annotated[float, tyro_arg('-u')] = Field(default=1.0, ge=0.0)
+    duration: Annotated[float, tyro_arg('-D')] = Field(default=1.0, ge=0.0)

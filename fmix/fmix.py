@@ -39,6 +39,9 @@ class FMix(BaseModel, frozen=True):
     # Play mix through speakers. If not set, play if no files.output.
     play: Annotated[tyro.conf.DisallowNone[bool | None], tyro_arg('-p')] = None
 
+    # Print more information
+    verbose: Annotated[bool, tyro_arg('-v')] = False
+
     @cached_property
     def edit_points(self) -> list[EditPoint]:
         ep = sorted(self.edit_point)
@@ -65,10 +68,12 @@ class FMix(BaseModel, frozen=True):
             return
         if self.files.output is None and not self.play:
             return 'Nothing to do'
+        if self.verbose:
+            print(dump(self), file=sys.stderr)
 
         result = self.audio(render_samples(self), self.samplerate)
         if self.files.output is not None:
-            audio_file.write(self.files.output, result, self.samplerate)
+            audio_file.write(self.files.output, result, self.samplerate, self.verbose)
         if self.play or self.files.output is None:
             player = DataPlayer(SampleData(result, self.samplerate))
             player.run()
