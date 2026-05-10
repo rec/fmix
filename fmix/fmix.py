@@ -80,7 +80,9 @@ class FMix(BaseModel, frozen=True):
 
     @cached_property
     def _data_and_rates(self) -> dict[str, tuple[np.ndarray, int]]:
-        return {k: audio_file.read(v) for k, v in self.files.inputs.items()}
+        return {
+            k: audio_file.read(v, self.verbose) for k, v in self.files.inputs.items()
+        }
 
 
 def dump(f: FMix) -> str:
