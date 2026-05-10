@@ -43,7 +43,7 @@ def _read_write(
         return func(p, **kwargs)
 
     def convert(in_file, out_file):
-        cmd = 'ffmpeg', '-i', in_file, out_file
+        cmd = 'ffmpeg', '-y', '-i', in_file, out_file
         if verbose:
             print('$', *cmd, file=sys.stderr)
         subprocess.run(cmd, text=True, capture_output=True)
