@@ -10,6 +10,7 @@ import numpy as np
 import tomlkit
 import tyro
 from pydantic import BaseModel
+from tuney.audio.device import Device
 from tuney.audio.players import DataPlayer
 from tuney.audio.sample_data import SampleData
 
@@ -28,6 +29,7 @@ class FMix(BaseModel, frozen=True):
     config_file: Annotated[Path | None, tyro.conf.Positional] = None
 
     audio: Audio = Audio()
+    device: Device = Device()
 
     # Dump config as toml and exit
     dump_config: Annotated[bool, tyro_arg('-d')] = False
@@ -66,7 +68,7 @@ class FMix(BaseModel, frozen=True):
         if self.dump_config:
             print(dump(self))
             return
-        if self.files.output is None and not self.play:
+        if self.files.output is None and self.play is False:
             return 'Nothing to do'
         if self.verbose:
             print(dump(self), file=sys.stderr)
@@ -75,7 +77,10 @@ class FMix(BaseModel, frozen=True):
         if self.files.output is not None:
             audio_file.write(self.files.output, result, self.samplerate, self.verbose)
         if self.play or self.files.output is None:
-            player = DataPlayer(SampleData(result, self.samplerate))
+            device = self.device.model_copy(
+                update={'samplerate': self.samplerate, 'channels': self.channels}
+            )
+            player = DataPlayer(SampleData(result, self.samplerate), device=device)
             player.run()
 
     @cached_property

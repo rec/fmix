@@ -29,6 +29,30 @@ usage: fmix [-h] [OPTIONS]
 │ -f FLOAT, --clip-fade FLOAT                                                  │
 │       How to fade the begin/end clipping (default: 0.2)                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ device options ─────────────────────────────────────────────────────────────╮
+│ --device.samplerate {None}|INT                                               │
+│       (default: None)                                                        │
+│ --device.blocksize {None}|INT                                                │
+│       (default: None)                                                        │
+│ --device.device {None}|INT|STR                                               │
+│       (default: None)                                                        │
+│ --device.channels {None}|INT                                                 │
+│       (default: None)                                                        │
+│ --device.dtype {fixed}                                                       │
+│       (fixed to: None)                                                       │
+│ --device.latency {None}|INT                                                  │
+│       (default: None)                                                        │
+│ --device.extra-settings {None}|STR                                           │
+│       (default: None)                                                        │
+│ --device.clip-off {None,True,False}                                          │
+│       (default: None)                                                        │
+│ --device.dither-off {None,True,False}                                        │
+│       (default: None)                                                        │
+│ --device.never-drop-input {None,True,False}                                  │
+│       (default: None)                                                        │
+│ --device.prime-output-buffers-using-stream-callback {None,True,False}        │
+│       (default: None)                                                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ fade options ───────────────────────────────────────────────────────────────╮
 │ -C {tri,qsin,hsin,esin,log,ipar,qua,cub,squ,cbr,par,exp,iqsin,ihsin,dese,    │
 │ desi,losi,sinc,isinc,quat,quatr,qsin2,hsin2,nofade}, --curve {tri,qsin,hsin, │

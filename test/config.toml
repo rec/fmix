@@ -5,6 +5,8 @@ normalize = "normalize"
 gain = 1.0
 clip_fade = 0.2
 
+[device]
+
 [[edit_point]]
 time = 1.11
 

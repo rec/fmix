@@ -40,7 +40,7 @@ def _read_write(
         if is_write:
             subs = sf.available_subtypes(fmt)
             kwargs['subtype'] = next(t for t in TYPES if t in subs)
-        return func(p, **kwargs)
+        return func(p, compression_level=0.0, **kwargs)
 
     def convert(in_file, out_file):
         cmd = 'ffmpeg', '-y', '-i', in_file, out_file
