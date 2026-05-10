@@ -16,11 +16,14 @@ def render_samples(f: FMix) -> np.ndarray:
     if not f.edit_points:
         raise ValueError('No edit_points')
 
-    length = f.sample_ends[-1] - f.sample_ends[0]
+    m = max(d.shape[0] for d in f.data.values())
+    sample_ends = [min(m, f.samplerate(e.time)) for e in f.edit_points]
+
+    length = sample_ends[-1] - sample_ends[0]
     shape = audio_file.to_shape(length, f.channels)
     result = np.zeros(shape=shape, dtype=DTYPE)
 
-    begin_end = pairwise([0] + f.sample_ends)
+    begin_end = pairwise([0] + sample_ends)
     for (begin, end), ep in zip(begin_end, f.edit_points, strict=True):
         if not ep.mix:
             continue

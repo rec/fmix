@@ -1,10 +1,12 @@
 usage: fmix [-h] [OPTIONS]
 
+╭─ positional arguments ───────────────────────────────────────────────────────╮
+│ [{None}|PATH]                                                                │
+│       Load configs from a JSON or toml file (default: None)                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ options ────────────────────────────────────────────────────────────────────╮
 │ -h, --help                                                                   │
 │       show this help message and exit                                        │
-│ -c {None}|PATH, --config-file {None}|PATH                                    │
-│       Load configs from a JSON or toml file (default: None)                  │
 │ -d, --dump-config, --no-dump-config                                          │
 │       Dump config as toml and exit (default: False)                          │
 │ -p, --play, --no-play                                                        │
