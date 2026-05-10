@@ -1,15 +1,22 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Self
+from typing import Annotated, Self
 
 from pydantic import BaseModel, Field, FilePath, model_validator
 
+from . import tyro_arg
+
 
 class Files(BaseModel, frozen=True):
-    inputs: dict[str, FilePath] = Field(default_factory=dict)
-    output: Path | None = None
-    overwrite: bool = True
+    # A map from mix names to file names
+    inputs: Annotated[dict[str, FilePath], tyro_arg('-i')] = Field(default_factory=dict)
+
+    # A single output file, which must be distinct from any input file
+    output: Annotated[Path | None, tyro_arg('-o')] = None
+
+    # Can the output file overwrite an existing file?
+    overwrite: Annotated[bool, tyro_arg('-w')] = False
 
     @model_validator(mode='after')
     def check_overwrite(self) -> Self:

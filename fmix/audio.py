@@ -3,21 +3,11 @@ from __future__ import annotations
 from typing import Annotated
 
 import numpy as np
-import tyro
-from pydantic import AfterValidator, BaseModel
+from pydantic import BaseModel
 
+from . import non_negative, tyro_arg
 from .dsp import Normalize
 from .time import Duration
-
-INF = float('inf')
-PRE = not True
-
-
-@AfterValidator
-def non_negative(x: float | None):
-    if x is None or x >= 0:
-        return x
-    raise ValueError(f'{x} is negative')
 
 
 class SampleRate(int):
@@ -26,19 +16,20 @@ class SampleRate(int):
 
 
 class Audio(BaseModel, frozen=True):
-    begin: Annotated[
-        Duration | None,
-        non_negative,
-        tyro.conf.arg(aliases=['-b'], prefix_name=PRE),
-    ] = None
-    end: Annotated[
-        Duration | None,
-        non_negative,
-        tyro.conf.arg(aliases=['-e'], prefix_name=PRE),
-    ] = None
-    gain: Annotated[float | None, non_negative] = None
-    normalize: Normalize = Normalize.normalize
-    clip_fade: Annotated[float, non_negative] = 0.2
+    # Start of output: None means to start from the beginning
+    begin: Annotated[Duration | None, non_negative, tyro_arg('-b')] = None
+
+    # End of output: None means to go all the way to the end
+    end: Annotated[Duration | None, non_negative, tyro_arg('-e')] = None
+
+    # How to normalize the result
+    normalize: Annotated[Normalize, tyro_arg('-n')] = Normalize.normalize
+
+    # Multiply the final result by this value after normalization
+    gain: Annotated[float | None, non_negative, tyro_arg('-g')] = None
+
+    # How to fade the begin/end clipping
+    clip_fade: Annotated[float, non_negative, tyro_arg('-f')] = 0.2
 
     def __call__(self, a: np.ndarray, samplerate: SampleRate) -> np.ndarray:
         a = self.normalize(a)

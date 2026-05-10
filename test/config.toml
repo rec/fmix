@@ -1,6 +1,6 @@
 [audio]
-gain = 1.0
 normalize = "normalize"
+gain = 1.0
 clip_fade = 0.2
 
 [[edit_point]]

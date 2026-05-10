@@ -7,7 +7,7 @@ REWRITE_TEST_DATA = os.environ.get('REWRITE_TEST_DATA')
 
 def run_test(cmd: str, result_file: Path | str):
     out = sp.run(cmd.split(), text=True, capture_output=True)
-    assert out.stderr == ''
+    assert out.stderr == '', out.stderr
 
     result_file = Path(result_file)
     if result_file.exists() and not REWRITE_TEST_DATA:

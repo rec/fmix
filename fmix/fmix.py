@@ -13,33 +13,31 @@ from pydantic import BaseModel
 from tuney.audio.players import DataPlayer
 from tuney.audio.sample_data import SampleData
 
-from . import audio_file
-from .audio import INF, Audio, SampleRate
+from . import audio_file, tyro_arg
+from .audio import Audio, SampleRate
 from .edit_point import EditPoint
 from .fade import Fade
 from .files import Files
 from .render import render_samples
 
+INF = float('inf')
+
 
 class FMix(BaseModel, frozen=True):
     audio: Audio = Audio()
 
-    config_file: Annotated[
-        Path | None,
-        tyro.conf.arg(aliases=['-c'], help='Load configs from a JSON or toml file'),
-    ] = None
+    # Load configs from a JSON or toml file
+    config_file: Annotated[Path | None, tyro_arg('-c')] = None
 
-    dump_config: Annotated[
-        bool,
-        tyro.conf.arg(aliases=['-d'], help='Dump config as toml and exit'),
-    ] = False
+    # Dump config as toml and exit
+    dump_config: Annotated[bool, tyro_arg('-d')] = False
 
     edit_point: Sequence[EditPoint] = ()
     fade: Fade = Fade()
     files: Files = Files()
 
     # Play mix through speakers. If not set, play if no files.output.
-    play: Annotated[bool, tyro.conf.arg(aliases=['-p'])] = False
+    play: Annotated[tyro.conf.DisallowNone[bool | None], tyro_arg('-p')] = None
 
     @cached_property
     def edit_points(self) -> list[EditPoint]:

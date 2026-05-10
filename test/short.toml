@@ -4,6 +4,7 @@ gain = 1.0
 [files]
 inputs = {one = 'test/audio/one.m4a', two = 'test/audio/two.m4a', three = 'test/audio/three.m4a'}
 output = 'test/audio/short.m4a'
+overwrite = true
 
 [fade]
 curve = 'tri'

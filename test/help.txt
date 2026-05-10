@@ -7,34 +7,39 @@ usage: fmix [-h] [OPTIONS]
 │       Load configs from a JSON or toml file (default: None)                  │
 │ -d, --dump-config, --no-dump-config                                          │
 │       Dump config as toml and exit (default: False)                          │
-│ -p {None,True,False}, --play {None,True,False}                               │
-│       Play mix through speakers. If not set, play if no files.output         │
+│ -p, --play, --no-play                                                        │
+│       Play mix through speakers. If not set, play if no files.output.        │
 │       (default: None)                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ audio options ──────────────────────────────────────────────────────────────╮
 │ -b {None}|TIME, --begin {None}|TIME                                          │
-│       (default: None)                                                        │
+│       Start of output: None means to start from the beginning (default:      │
+│       None)                                                                  │
 │ -e {None}|TIME, --end {None}|TIME                                            │
-│       (default: None)                                                        │
-│ --audio.gain {None}|FLOAT                                                    │
-│       (default: None)                                                        │
-│ --audio.normalize {none,limit,normalize}                                     │
-│       (default: normalize)                                                   │
-│ --audio.clip-fade FLOAT                                                      │
-│       (default: 0.2)                                                         │
+│       End of output: None means to go all the way to the end (default: None) │
+│ -n {none,limit,normalize}, --normalize {none,limit,normalize}                │
+│       How to normalize the result (default: normalize)                       │
+│ -g {None}|FLOAT, --gain {None}|FLOAT                                         │
+│       Multiply the final result by this value after normalization (default:  │
+│       None)                                                                  │
+│ -f FLOAT, --clip-fade FLOAT                                                  │
+│       How to fade the begin/end clipping (default: 0.2)                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ fade options ───────────────────────────────────────────────────────────────╮
-│ --fade.curve {tri,qsin,hsin,esin,log,ipar,qua,cub,squ,cbr,par,exp,iqsin,     │
-│ ihsin,dese,desi,losi,sinc,isinc,quat,quatr,qsin2,hsin2,nofade}               │
-│       (default: tri)                                                         │
-│ --fade.duration FLOAT                                                        │
-│       (default: 1.0)                                                         │
+│ -v {tri,qsin,hsin,esin,log,ipar,qua,cub,squ,cbr,par,exp,iqsin,ihsin,dese,    │
+│ desi,losi,sinc,isinc,quat,quatr,qsin2,hsin2,nofade}, --curve {tri,qsin,hsin, │
+│ esin,log,ipar,qua,cub,squ,cbr,par,exp,iqsin,ihsin,dese,desi,losi,sinc,isinc, │
+│ quat,quatr,qsin2,hsin2,nofade}                                               │
+│       The curve to use for fades (default: tri)                              │
+│ -u FLOAT, --duration FLOAT                                                   │
+│       How long fades in or out last, in seconds (default: 1.0)               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ files options ──────────────────────────────────────────────────────────────╮
-│ --files.inputs [STR PATH [STR PATH ...]]                                     │
-│       (default: )                                                            │
-│ --files.output {None}|PATH                                                   │
+│ -i [STR PATH [STR PATH ...]], --inputs [STR PATH [STR PATH ...]]             │
+│       A map from mix names to file names (default: )                         │
+│ -o {None}|PATH, --output {None}|PATH                                         │
+│       A single output file, which must be distinct from any input file       │
 │       (default: None)                                                        │
-│ --files.overwrite, --files.no-overwrite                                      │
-│       (default: True)                                                        │
+│ -w, --overwrite, --no-overwrite                                              │
+│       Can the output file overwrite an existing file? (default: False)       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
