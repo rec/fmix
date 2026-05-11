@@ -25,9 +25,20 @@ def read(path: str | Path, verbose: bool = False) -> tuple[np.ndarray, int]:
 
 
 def write(
-    path: str | Path, data: np.ndarray, samplerate: int, verbose: bool = False
+    path: str | Path,
+    data: np.ndarray,
+    samplerate: int,
+    verbose: bool = False,
+    compression_level: float = 0.0,
 ) -> None:
-    _read_write(path, sf.write, verbose, data=data, samplerate=samplerate)
+    _read_write(
+        path,
+        sf.write,
+        verbose,
+        data=data,
+        samplerate=samplerate,
+        compression_level=compression_level,
+    )
 
 
 def _read_write(
@@ -40,7 +51,7 @@ def _read_write(
         if is_write:
             subs = sf.available_subtypes(fmt)
             kwargs['subtype'] = next(t for t in TYPES if t in subs)
-        return func(p, compression_level=0.0, **kwargs)
+        return func(p, **kwargs)
 
     def convert(in_file, out_file):
         cmd = 'ffmpeg', '-y', '-i', in_file, out_file
