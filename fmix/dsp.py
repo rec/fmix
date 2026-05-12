@@ -1,8 +1,6 @@
 from enum import StrEnum, auto
 
-import numpy as np
-
-DTYPE = np.float64
+from . import DTYPE, np
 
 
 class Normalize(StrEnum):

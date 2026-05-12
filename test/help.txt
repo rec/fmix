@@ -54,11 +54,10 @@ usage: fmix [-h] [OPTIONS]
 │       (default: None)                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ fade options ───────────────────────────────────────────────────────────────╮
-│ -C {tri,qsin,hsin,esin,log,ipar,qua,cub,squ,cbr,par,exp,iqsin,ihsin,dese,    │
-│ desi,losi,sinc,isinc,quat,quatr,qsin2,hsin2,nofade}, --curve {tri,qsin,hsin, │
-│ esin,log,ipar,qua,cub,squ,cbr,par,exp,iqsin,ihsin,dese,desi,losi,sinc,isinc, │
-│ quat,quatr,qsin2,hsin2,nofade}                                               │
-│       The curve to use for fades (default: tri)                              │
+│ --fade.exponent FLOAT                                                        │
+│       The polynomial exponent for the base curve. (default: 1.0)             │
+│ --fade.equal-voltage, --fade.no-equal-voltage                                │
+│       If False, mix using equal power curve (default: False)                 │
 │ -D FLOAT, --duration FLOAT                                                   │
 │       How long fades in or out last, in seconds (default: 1.0)               │
 ╰──────────────────────────────────────────────────────────────────────────────╯

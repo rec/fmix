@@ -9,7 +9,7 @@ import numpy as np
 import soundfile as sf
 import tdir
 
-from .dsp import DTYPE
+from . import DTYPE, samplerate
 
 _TEMP_FILE = 'tmp.wav'
 ALWAYS_2D = False
@@ -27,18 +27,12 @@ def read(path: str | Path, verbose: bool = False) -> tuple[np.ndarray, int]:
 def write(
     path: str | Path,
     data: np.ndarray,
-    samplerate: int,
     verbose: bool = False,
-    compression_level: float = 0.0,
 ) -> None:
-    _read_write(
-        path,
-        sf.write,
-        verbose,
-        data=data,
-        samplerate=samplerate,
-        compression_level=compression_level,
-    )
+    path = Path(path)
+    kwargs = {'compression_level': 0.0} if path.suffix == '.mp3' else {}
+
+    _read_write(path, sf.write, verbose, data=data, samplerate=samplerate(), **kwargs)
 
 
 def _read_write(

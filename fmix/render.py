@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 from fmix import audio_file
-from fmix.dsp import DTYPE
+
+from . import DTYPE, to_samples
 
 if TYPE_CHECKING:
     from fmix.fmix import FMix
@@ -17,18 +18,20 @@ def render_samples(f: FMix) -> np.ndarray:
         raise ValueError('No edit_points')
 
     m = max(d.shape[0] for d in f.data.values())
-    sample_ends = [min(m, f.samplerate(e.time)) for e in f.edit_points]
+    sample_ends = [min(m, to_samples(e.time)) for e in f.edit_points]
 
     length = sample_ends[-1] - sample_ends[0]
     shape = audio_file.to_shape(length, f.channels)
     result = np.zeros(shape=shape, dtype=DTYPE)
 
-    begin_end = pairwise([0] + sample_ends)
-    for (begin, end), ep in zip(begin_end, f.edit_points, strict=True):
+    bep = zip(pairwise([0] + sample_ends), f.edit_points, strict=True)
+    last = len(f.edit_points) - 1
+    for i, ((begin, end), ep) in enumerate(bep):
         if not ep.mix:
             continue
 
-        F = f.samplerate((ep.fade or f.fade).duration)
+        fade = ep.fade or f.fade
+        F = fade.num_samples
         mix: np.ndarray | None = None
         for k, v in ep.mix.items():
             d = f.data[k][begin : end + F] * v
@@ -38,9 +41,10 @@ def render_samples(f: FMix) -> np.ndarray:
                 mix += d
         assert mix is not None
         if F:
-            mix[:F] *= np.linspace(0, 1, F, endpoint=False, dtype=DTYPE)
-            mix[-F:] *= np.linspace(1, 0, F, endpoint=False, dtype=DTYPE)
+            mix[:F] *= fade.fade_in if i == 0 else fade.crossfade[0]
+            mix[-F:] *= fade.fade_out if i == last else fade.crossfade[1]
+
         segment = result[begin : end + F]
         segment += mix[: len(segment)]
 
-    return f.audio(result, f.samplerate)
+    return f.audio(result)

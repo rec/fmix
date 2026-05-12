@@ -24,7 +24,8 @@ three = 1.0
 time = 3.0
 
 [fade]
-curve = "tri"
+exponent = 1.0
+equal_voltage = false
 duration = 0.2
 
 [files]

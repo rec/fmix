@@ -14,8 +14,8 @@ from tuney.audio.device import Device
 from tuney.audio.players import DataPlayer
 from tuney.audio.sample_data import SampleData
 
-from . import audio_file, tyro_arg
-from .audio import Audio, SampleRate
+from . import audio_file, samplerate, set_samplerate, tyro_arg
+from .audio import Audio
 from .edit_point import EditPoint
 from .fade import Fade
 from .files import Files
@@ -53,16 +53,15 @@ class FMix(BaseModel, frozen=True):
         return ep
 
     @cached_property
-    def samplerate(self) -> SampleRate:
-        return SampleRate(max(r for _, r in self._data_and_rates.values()))
-
-    @cached_property
     def channels(self) -> int:
         return max(len(d.shape) for d in self.data.values())
 
     @cached_property
     def data(self) -> dict[str, np.ndarray]:
-        return {k: d for k, (d, _) in self._data_and_rates.items()}
+        it = self.files.inputs.items()
+        ds = {k: audio_file.read(v, self.verbose) for k, v in it}
+        set_samplerate(max(s for _, s in ds.values()))
+        return {k: d for k, (d, _) in ds.items()}
 
     def __call__(self) -> str | None:
         if self.dump_config:
@@ -73,14 +72,14 @@ class FMix(BaseModel, frozen=True):
         if self.verbose:
             print(dump(self), file=sys.stderr)
 
-        result = self.audio(render_samples(self), self.samplerate)
+        result = self.audio(render_samples(self))
         if self.files.output is not None:
-            audio_file.write(self.files.output, result, self.samplerate, self.verbose)
+            audio_file.write(self.files.output, result, self.verbose)
         if self.play or self.files.output is None:
             device = self.device.model_copy(
-                update={'samplerate': self.samplerate, 'channels': self.channels}
+                update={'samplerate': samplerate(), 'channels': self.channels}
             )
-            player = DataPlayer(SampleData(result, self.samplerate), device=device)
+            player = DataPlayer(SampleData(result, samplerate()), device=device)
             player.run()
 
     @cached_property
