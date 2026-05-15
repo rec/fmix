@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import tdir
 
-import fmix
-from fmix import audio_file
+from fmix import audio_file, constants
 
 
 def test_read_write(monkeypatch):
@@ -12,7 +11,7 @@ def test_read_write(monkeypatch):
     length, *rest = data.shape
     assert length == 303104
     assert rest in ([], [1])
-    monkeypatch.setattr(fmix, '_samplerate', samplerate)
+    monkeypatch.setattr(constants, '_samplerate', samplerate)
 
     with tdir():
         audio_file.write('out.m4a', data)

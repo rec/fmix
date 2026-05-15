@@ -5,7 +5,7 @@ from pathlib import Path
 from numpy import testing
 from pytest import mark
 
-from fmix import audio_file
+from fmix import audio_file, constants
 from fmix.__main__ import read_fmix
 from fmix.render import render_samples
 
@@ -16,10 +16,12 @@ ENABLED = False  # This is obsolete anyway
 
 
 @mark.parametrize('mixfile', ['short.toml'])
-def test_render_data(mixfile):
+def test_render_data(mixfile, monkeypatch):
+    monkeypatch.setattr(constants, '_dtype', 'float64')
+    monkeypatch.setattr(constants, '_samplerate', 48_000)
     path = Path('test') / mixfile
     fmix = read_fmix(path)
-    actual = render_samples(fmix)
+    actual = render_samples(fmix, 'float64')
 
     if not ENABLED:
         return

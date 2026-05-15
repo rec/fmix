@@ -2,8 +2,6 @@ from enum import StrEnum, auto
 
 import numpy as np
 
-from . import constants
-
 
 class Normalize(StrEnum):
     none = auto()
@@ -29,11 +27,9 @@ def to_float(data: np.ndarray) -> np.ndarray:
     return data / max(-float(ii.min), float(ii.max))
 
 
-def to_integer(data: np.ndarray, dtype: np.dtype | None = None) -> np.ndarray:
+def to_integer(data: np.ndarray, dtype: np.dtype) -> np.ndarray:
     if np.issubdtype(data.dtype, np.integer):
         return data
-    if dtype is None:
-        dtype = constants.dtype()
     ii = np.iinfo(dtype)
     d = data * max(-float(ii.min), float(ii.max))
     np.clip(d, a_min=float(ii.min), a_max=float(ii.max), out=d)

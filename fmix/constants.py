@@ -1,13 +1,12 @@
-import numpy as np
-
-
-def dtype() -> np.dtype | None:
+def dtype() -> str:
+    assert _dtype is not None
     return _dtype
 
 
-def set_dtype(dtype: np.dtype) -> np.dtype | None:
+def set_dtype(dtype: str):
     global _dtype
-    assert _dtype is None or _dtype == dtype
+
+    assert _dtype in (None, dtype), (_dtype, dtype)
     _dtype = dtype
 
 
@@ -27,5 +26,5 @@ def to_samples(time: float) -> int:
     return round(samplerate() * time)
 
 
-_dtype: np.dtype | None = None
+_dtype: str | None = None
 _samplerate: int | None = None

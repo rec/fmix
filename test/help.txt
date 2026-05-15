@@ -13,8 +13,10 @@ Handles either stereo or mono sources.
 ╭─ options ────────────────────────────────────────────────────────────────────╮
 │ -h, --help                                                                   │
 │       show this help message and exit                                        │
-│ -t {fixed}, --dtype {fixed}                                                  │
-│       (fixed to: None)                                                       │
+│ --device {None}|INT|STR                                                      │
+│       (default: None)                                                        │
+│ -t STR, --dtype STR                                                          │
+│       (default: float64)                                                     │
 │ -d, --dump-config, --no-dump-config                                          │
 │       Dump config as toml and exit (default: False)                          │
 │ -p, --play, --no-play                                                        │
@@ -36,12 +38,6 @@ Handles either stereo or mono sources.
 │       None)                                                                  │
 │ -f FLOAT, --clip-fade FLOAT                                                  │
 │       How to fade the begin/end clipping (default: 0.2)                      │
-╰──────────────────────────────────────────────────────────────────────────────╯
-╭─ device options ─────────────────────────────────────────────────────────────╮
-│ --device.device {None}|INT|STR                                               │
-│       (default: None)                                                        │
-│ --device.dtype {fixed}                                                       │
-│       (fixed to: None)                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ fade options ───────────────────────────────────────────────────────────────╮
 │ --fade.exponent FLOAT                                                        │
