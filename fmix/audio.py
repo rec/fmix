@@ -5,7 +5,8 @@ from typing import Annotated
 import numpy as np
 from pydantic import BaseModel
 
-from . import non_negative, to_samples, tyro_arg
+from . import non_negative, tyro_arg
+from .constants import to_samples
 from .dsp import Normalize
 from .time import Duration
 

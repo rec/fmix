@@ -1,5 +1,11 @@
 usage: fmix [-h] [OPTIONS]
 
+🎧 fmix: Quickly mix a recording session from the command line 🎧
+
+Balance and crossfade mixes of existing tracks, like those captured from a digital mixer during performance, based on a text file description in JSON or TOML.
+
+Handles either stereo or mono sources.
+
 ╭─ positional arguments ───────────────────────────────────────────────────────╮
 │ [{None}|PATH]                                                                │
 │       Load configs from a JSON or toml file (default: None)                  │
@@ -7,6 +13,8 @@ usage: fmix [-h] [OPTIONS]
 ╭─ options ────────────────────────────────────────────────────────────────────╮
 │ -h, --help                                                                   │
 │       show this help message and exit                                        │
+│ -t {fixed}, --dtype {fixed}                                                  │
+│       (fixed to: None)                                                       │
 │ -d, --dump-config, --no-dump-config                                          │
 │       Dump config as toml and exit (default: False)                          │
 │ -p, --play, --no-play                                                        │
@@ -30,28 +38,10 @@ usage: fmix [-h] [OPTIONS]
 │       How to fade the begin/end clipping (default: 0.2)                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ device options ─────────────────────────────────────────────────────────────╮
-│ --device.samplerate {None}|INT                                               │
-│       (default: None)                                                        │
-│ --device.blocksize {None}|INT                                                │
-│       (default: None)                                                        │
 │ --device.device {None}|INT|STR                                               │
-│       (default: None)                                                        │
-│ --device.channels {None}|INT                                                 │
 │       (default: None)                                                        │
 │ --device.dtype {fixed}                                                       │
 │       (fixed to: None)                                                       │
-│ --device.latency {None}|INT                                                  │
-│       (default: None)                                                        │
-│ --device.extra-settings {None}|STR                                           │
-│       (default: None)                                                        │
-│ --device.clip-off {None,True,False}                                          │
-│       (default: None)                                                        │
-│ --device.dither-off {None,True,False}                                        │
-│       (default: None)                                                        │
-│ --device.never-drop-input {None,True,False}                                  │
-│       (default: None)                                                        │
-│ --device.prime-output-buffers-using-stream-callback {None,True,False}        │
-│       (default: None)                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ fade options ───────────────────────────────────────────────────────────────╮
 │ --fade.exponent FLOAT                                                        │

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import Collection, Sequence
+from collections.abc import Collection
 from functools import cached_property
 from pathlib import Path
 from typing import Annotated
@@ -9,19 +9,33 @@ from typing import Annotated
 import numpy as np
 import tomlkit
 import tyro
-from pydantic import BaseModel
-from tuney.audio.device import Device
+from pydantic import BaseModel, ConfigDict, Field
+from tuney.audio.device import Device as _Device
 from tuney.audio.players import DataPlayer
 from tuney.audio.sample_data import SampleData
 
-from . import audio_file, samplerate, set_samplerate, tyro_arg
+from . import audio_file, tyro_arg
 from .audio import Audio
+from .constants import samplerate, set_samplerate
 from .edit_point import EditPoint
 from .fade import Fade
 from .files import Files
 from .render import render_samples
 
 INF = float('inf')
+
+
+class Device(BaseModel, frozen=True):
+    device: int | str | None = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    def __call__(
+        self, channels: int | None = None, dtype: np.dtype | None = None
+    ) -> _Device:
+        return _Device(
+            device=self.device, dtype=dtype, channels=channels, samplerate=samplerate(),
+        )
 
 
 class FMix(BaseModel, frozen=True):
@@ -33,16 +47,24 @@ class FMix(BaseModel, frozen=True):
 
     Handles either stereo or mono sources.
     """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     # Load configs from a JSON or toml file
     config_file: Annotated[Path | None, tyro.conf.Positional] = None
 
     audio: Audio = Audio()
     device: Device = Device()
 
+    dtype: Annotated[np.dtype | None, tyro_arg('-t')] = np.float64
+
     # Dump config as toml and exit
     dump_config: Annotated[bool, tyro_arg('-d')] = False
 
-    edit_point: Sequence[EditPoint] = ()
+    edit_point: Annotated[
+        list[EditPoint],
+        tyro.conf.UsePythonSyntaxForLiteralCollections,
+    ] = Field(default_factory=list)
     fade: Fade = Fade()
     files: Files = Files()
 
@@ -84,9 +106,7 @@ class FMix(BaseModel, frozen=True):
         if self.files.output is not None:
             audio_file.write(self.files.output, result, self.verbose)
         if self.play or self.files.output is None:
-            device = self.device.model_copy(
-                update={'samplerate': samplerate(), 'channels': self.channels}
-            )
+            device = self.device(self.channels, self.dtype)
             player = DataPlayer(SampleData(result, samplerate()), device=device)
             player.run()
 

@@ -9,7 +9,7 @@ import numpy as np
 import soundfile as sf
 import tdir
 
-from . import DTYPE, samplerate
+from .constants import dtype, samplerate
 
 _TEMP_FILE = 'tmp.wav'
 ALWAYS_2D = False
@@ -21,7 +21,7 @@ def to_shape(*a: int) -> tuple[int, ...]:
 
 
 def read(path: str | Path, verbose: bool = False) -> tuple[np.ndarray, int]:
-    return _read_write(path, sf.read, verbose, always_2d=ALWAYS_2D, dtype=DTYPE)
+    return _read_write(path, sf.read, verbose, always_2d=ALWAYS_2D, dtype=dtype())
 
 
 def write(

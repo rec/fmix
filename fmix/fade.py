@@ -6,7 +6,8 @@ from typing import Annotated
 import numpy as np
 from pydantic import BaseModel, Field
 
-from . import DTYPE, non_negative, to_samples, tyro_arg
+from . import non_negative, tyro_arg
+from .constants import dtype, to_samples
 
 
 class Fade(BaseModel, frozen=True):
@@ -37,5 +38,5 @@ class Fade(BaseModel, frozen=True):
         return to_samples(self.duration)
 
     def _fade(self, begin: float, end: float) -> np.ndarray:
-        a = np.linspace(begin, end, self.num_samples, dtype=DTYPE)
+        a = np.linspace(begin, end, self.num_samples, dtype=dtype())
         return a if self.exponent == 1.0 else np.pow(a, self.exponent, out=a)
