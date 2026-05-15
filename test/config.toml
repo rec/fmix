@@ -23,9 +23,9 @@ three = 1.0
 time = 3.0
 
 [fade]
+duration = 0.2
 exponent = 1.0
 equal_voltage = false
-duration = 0.2
 
 [files]
 output = "test/audio/short.m4a"

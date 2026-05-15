@@ -40,12 +40,12 @@ Handles either stereo or mono sources.
 │       How to fade the begin/end clipping (default: 0.2)                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ fade options ───────────────────────────────────────────────────────────────╮
-│ --fade.exponent FLOAT                                                        │
-│       The polynomial exponent for the base curve. (default: 1.0)             │
-│ --fade.equal-voltage, --fade.no-equal-voltage                                │
-│       If False, mix using equal power curve (default: False)                 │
-│ -D FLOAT, --duration FLOAT                                                   │
+│ -u FLOAT, --duration FLOAT                                                   │
 │       How long fades in or out last, in seconds (default: 1.0)               │
+│ -x FLOAT, --exponent FLOAT                                                   │
+│       The polynomial exponent for the base curve. (default: 1.0)             │
+│ -q, --equal-voltage, --no-equal-voltage                                      │
+│       If False, mix using equal power curve (default: False)                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ files options ──────────────────────────────────────────────────────────────╮
 │ -i [STR PATH [STR PATH ...]], --inputs [STR PATH [STR PATH ...]]             │

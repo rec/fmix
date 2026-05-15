@@ -11,14 +11,14 @@ from .constants import dtype, to_samples
 
 
 class Fade(BaseModel, frozen=True):
+    # How long fades in or out last, in seconds
+    duration: Annotated[float, tyro_arg('-u')] = Field(default=1.0, ge=0.0)
+
     # The polynomial exponent for the base curve.
-    exponent: Annotated[float, non_negative] = 1.0
+    exponent: Annotated[float, non_negative, tyro_arg('-x')] = 1.0
 
     # If False, mix using equal power curve
-    equal_voltage: bool = False
-
-    # How long fades in or out last, in seconds
-    duration: Annotated[float, tyro_arg('-D')] = Field(default=1.0, ge=0.0)
+    equal_voltage: Annotated[bool, tyro_arg('-q')] = False
 
     @cached_property
     def crossfade(self) -> tuple[np.ndarray, np.ndarray]:
