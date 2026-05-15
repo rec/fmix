@@ -41,7 +41,7 @@ fmix = "fmix.__main__:main"
 [tool.poetry]
 name = "fmix"
 version = "0.2.0"
-description = "🎧 A scripted track mixer 🎧"
+description = "🎧 Quickly mix a recording session from the command line 🎧"
 authors = ["Tom Ritchford <tom@swirly.com>"]
 readme = "README.md"
 
