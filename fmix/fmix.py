@@ -25,6 +25,14 @@ INF = float('inf')
 
 
 class FMix(BaseModel, frozen=True):
+    """
+    🎧 fmix: Quickly mix a recording session from the command line 🎧
+
+    Balance and crossfade mixes of existing tracks, like those captured from a digital
+    mixer during performance, based on a text file description in JSON or TOML.
+
+    Handles either stereo or mono sources.
+    """
     # Load configs from a JSON or toml file
     config_file: Annotated[Path | None, tyro.conf.Positional] = None
 

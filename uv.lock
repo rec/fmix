@@ -2,6 +2,10 @@ version = 1
 revision = 3
 requires-python = ">=3.13"
 
+[options]
+exclude-newer = "2026-05-08T11:43:18.55772Z"
+exclude-newer-span = "P1W"
+
 [[package]]
 name = "annotated-doc"
 version = "0.0.4"
@@ -236,7 +240,7 @@ requires-dist = [
     { name = "tdir", specifier = ">=1.9.0" },
     { name = "tomlkit", specifier = ">=0.14.0" },
     { name = "tuney", editable = "../tuney" },
-    { name = "tyro", git = "https://github.com/brentyi/tyro?rev=bb8e67e" },
+    { name = "tyro", git = "https://github.com/rec/tyro" },
 ]
 
 [package.metadata.requires-dev]
@@ -844,7 +848,7 @@ wheels = [
 [[package]]
 name = "tyro"
 version = "1.0.13"
-source = { git = "https://github.com/brentyi/tyro?rev=bb8e67e#bb8e67e77ad36b2e06600001ba54cbdaf78667cb" }
+source = { git = "https://github.com/rec/tyro#d83f6a0cae30e2d2e90ed15e80acccab317439b0" }
 dependencies = [
     { name = "docstring-parser" },
     { name = "typeguard" },
