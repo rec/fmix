@@ -20,8 +20,7 @@ def test_render_data(mixfile, monkeypatch):
     monkeypatch.setattr(constants, '_dtype', 'float64')
     monkeypatch.setattr(constants, '_samplerate', 48_000)
     path = Path('test') / mixfile
-    fmix = read_fmix(path)
-    actual = render_samples(fmix, 'float64')
+    actual = render_samples(read_fmix(path))
 
     if not ENABLED:
         return
@@ -31,4 +30,4 @@ def test_render_data(mixfile, monkeypatch):
         if ENABLED:
             testing.assert_allclose(actual, expected)
     else:
-        audio_file.write(RESULT_FILE, actual, fmix.sample_rate)
+        audio_file.write(RESULT_FILE, actual, constants.samplerate())

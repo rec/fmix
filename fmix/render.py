@@ -7,19 +7,19 @@ import numpy as np
 
 from fmix import audio_file
 
-from .constants import to_samples
+from .constants import dtype, to_samples
 
 if TYPE_CHECKING:
     from fmix.fmix import FMix
 
 
-def render_samples(f: FMix, dtype: str) -> np.ndarray:
+def render_samples(f: FMix) -> np.ndarray:
     m = max(d.shape[0] for d in f.data.values())
     sample_ends = [min(m, to_samples(e.time)) for e in f.edit_points]
 
     length = sample_ends[-1] - sample_ends[0]
     shape = audio_file.to_shape(length, f.channels)
-    result = np.zeros(shape=shape, dtype=dtype)
+    result = np.zeros(shape=shape, dtype=dtype())
 
     bep = zip(pairwise([0] + sample_ends), f.edit_points, strict=True)
     last = len(f.edit_points) - 1

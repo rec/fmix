@@ -95,7 +95,7 @@ class FMix(BaseModel, frozen=True):
         if self.verbose:
             print(dump(self), file=sys.stderr)
 
-        result = self.audio(render_samples(self, self.dtype))
+        result = self.audio(render_samples(self))
         if self.files.output is not None:
             audio_file.write(self.files.output, result, self.verbose)
         if self.play or self.files.output is None:
