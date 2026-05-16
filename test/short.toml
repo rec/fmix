@@ -10,14 +10,14 @@ overwrite = true
 curve = 'tri'
 duration = 0.2     # In seconds
 
-[[edit_point]]
+[[edit_points]]
 time = 1.11
 mix = {one = 1}
 
-[[edit_point]]
+[[edit_points]]
 time = 2.22
 mix = {two = 1, three = 1}
 
-[[edit_point]]
+[[edit_points]]
 time = 3
 mix = {}

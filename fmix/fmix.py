@@ -9,7 +9,7 @@ from typing import Annotated
 import numpy as np
 import tomlkit
 import tyro
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 from tuney.audio.device import Device
 from tuney.audio.players import DataPlayer
 from tuney.audio.sample_data import SampleData
@@ -22,6 +22,16 @@ from .files import Files
 from .render import render_samples
 
 INF = float('inf')
+
+
+@AfterValidator
+def validate_end_points(ep: list[EditPoint]) -> list[EditPoint]:
+    ep.sort()
+    if ep and ep[-1].mix:
+        # If the last point isn't an empty mix, add a segment going all the way
+        # to the end.
+        ep.append(EditPoint(time=INF))
+    return ep
 
 
 class FMix(BaseModel, frozen=True):
@@ -47,8 +57,9 @@ class FMix(BaseModel, frozen=True):
     # Dump config as toml and exit
     dump_config: Annotated[bool, tyro_arg('-d')] = False
 
-    edit_point: Annotated[
+    edit_points: Annotated[
         list[EditPoint],
+        validate_end_points,
         tyro.conf.UsePythonSyntaxForLiteralCollections,
     ] = Field(default_factory=list)
     fade: Fade = Fade()
@@ -59,14 +70,6 @@ class FMix(BaseModel, frozen=True):
 
     # Print more information
     verbose: Annotated[bool, tyro_arg('-v')] = False
-
-    @cached_property
-    def edit_points(self) -> list[EditPoint]:
-        ep = sorted(self.edit_point)
-        if ep and ep[-1].mix:
-            ep.append(EditPoint(time=INF))
-        assert len(ep) > 1
-        return ep
 
     @cached_property
     def channels(self) -> int:

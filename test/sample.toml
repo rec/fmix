@@ -12,18 +12,18 @@ output = 'MIX + 150.wav'
 curve = 'tri'
 duration = 1.0     # In seconds
 
-[[edit_point]]
+[[edit_points]]
 time = 60
 mix = {mix = 1}      # Any track starting with 9 is at level 1, all else at level 0
 
-[[edit_point]]
+[[edit_points]]
 time = '2:03.45'   # Just after two minutes. The number 123.45 also works.
 mix = {ben = 0.7, wx = 0.8, dl = 0.7}
 
-[[edit_point]]
+[[edit_points]]
 time = 185.0       # The string '3:05' also works
 mix = {ben = 1}
 
-[[edit_point]]
+[[edit_points]]
 time = '20:57.02'
 mix = {}

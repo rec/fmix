@@ -6,20 +6,20 @@ normalize = "normalize"
 gain = 1.0
 clip_fade = 0.2
 
-[[edit_point]]
+[[edit_points]]
 time = 1.11
 
-[edit_point.mix]
+[edit_points.mix]
 one = 1.0
 
-[[edit_point]]
+[[edit_points]]
 time = 2.22
 
-[edit_point.mix]
+[edit_points.mix]
 two = 1.0
 three = 1.0
 
-[[edit_point]]
+[[edit_points]]
 time = 3.0
 
 [fade]

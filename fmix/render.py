@@ -14,9 +14,6 @@ if TYPE_CHECKING:
 
 
 def render_samples(f: FMix, dtype: str) -> np.ndarray:
-    if not f.edit_points:
-        raise ValueError('No edit_points')
-
     m = max(d.shape[0] for d in f.data.values())
     sample_ends = [min(m, to_samples(e.time)) for e in f.edit_points]
 

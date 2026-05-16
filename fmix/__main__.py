@@ -38,9 +38,12 @@ def main():
         cli = partial(tyro.cli, FMix, prog='fmix')
         if (f := cli()).config_file:
             f = cli(default=read_fmix(f.config_file))
-        sys.exit(f())
+        result = f()
     except ValidationError as e:
-        sys.exit(str(e))
+        if getattr(locals().get('f'), 'verbose', False):
+            raise
+        result = str(e)
+    sys.exit(result)
 
 
 if __name__ == '__main__':
