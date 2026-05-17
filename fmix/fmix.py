@@ -84,6 +84,8 @@ class FMix(BaseModel, frozen=True):
         return self._samplerate_data[0]
 
     def __call__(self) -> str | None:
+        # Cannot be done as a validator because of the config file
+        self.files.check_overwrite()
         constants.set_samplerate(self.samplerate)
         constants.set_dtype(self.dtype)
 

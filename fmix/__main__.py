@@ -39,7 +39,7 @@ def main():
         if (f := cli()).config_file:
             f = cli(default=read_fmix(f.config_file))
         result = f()
-    except ValidationError as e:
+    except (ValidationError, FileExistsError) as e:
         if getattr(locals().get('f'), 'verbose', False):
             raise
         result = str(e)

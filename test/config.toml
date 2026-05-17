@@ -28,7 +28,7 @@ exponent = 1.0
 equal_voltage = false
 
 [files]
-output = "test/audio/short.m4a"
+output = "test/audio/short.wav"
 overwrite = true
 
 [files.inputs]
