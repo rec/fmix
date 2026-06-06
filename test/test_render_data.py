@@ -8,7 +8,8 @@ from numpy import testing
 from pytest import mark
 
 from fmix import audio_file, constants
-from fmix.__main__ import read_fmix
+from fmix.fmix import FMix
+from fmix.read_tyro import read_file
 from fmix.render import render_samples
 
 from . import REWRITE_TEST_DATA
@@ -21,7 +22,7 @@ def test_render_data(mixfile, monkeypatch):
     monkeypatch.setattr(constants, '_dtype', 'float64')
     monkeypatch.setattr(constants, '_samplerate', 48_000)
     path = Path('test') / mixfile
-    actual = render_samples(read_fmix(path))
+    actual = render_samples(FMix(**read_file(path)))
 
     if RESULT_FILE.exists() and not REWRITE_TEST_DATA:
         expected, _ = audio_file.read(RESULT_FILE)
